@@ -1,0 +1,361 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Row 1: Score + Alerts */
+.dashboard-row-1 {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: var(--spacing-lg);
+}
+
+/* Score Gauge Card */
+.score-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl);
+}
+
+.score-gauge-wrapper {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+}
+
+.score-gauge-svg {
+    width: 130px;
+    height: 130px;
+    transform: rotate(-90deg);
+}
+
+.score-gauge-bg {
+    fill: none;
+    stroke: #E5E7EB;
+    stroke-width: 10;
+}
+
+.score-gauge-fill {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease;
+}
+
+.score-gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.score-gauge-value .score-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1;
+}
+
+.score-gauge-value .score-label {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.score-info {
+    flex: 1;
+}
+
+.score-status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-sm);
+}
+
+.score-info h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+}
+
+.score-info p {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Alerts Card */
+.alerts-card {
+    padding: var(--spacing-xl);
+}
+
+.alerts-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-lg);
+}
+
+.alerts-empty {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-primary-light);
+    border-radius: var(--radius-md);
+}
+
+.alerts-empty-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.alerts-empty-text h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.alerts-empty-text p {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+/* Row 2: Score Categories */
+.dashboard-categories {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-md);
+}
+
+.category-card {
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.category-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.category-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.category-name {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    margin-top: var(--spacing-sm);
+}
+
+.category-score {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+}
+
+.category-score .value {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.category-score .total {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+.category-action {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: gap 0.2s ease;
+}
+
+.category-action:hover {
+    gap: 8px;
+}
+
+/* Row 3: Net Worth */
+.networth-card {
+    padding: var(--spacing-xl);
+}
+
+.networth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+}
+
+.networth-title h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.networth-title p {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+.networth-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.networth-change {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.networth-filter-btn {
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border-light);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.networth-filter-btn:hover,
+.networth-filter-btn.active {
+    background: var(--color-card);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+.networth-body {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: var(--spacing-xl);
+}
+
+.networth-balance-label {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+}
+
+.networth-balance-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+}
+
+.networth-chart-container {
+    width: 100%;
+    height: 220px;
+}
+
+.networth-side-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    justify-content: center;
+}
+
+.networth-stat-card {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-light);
+}
+
+.networth-stat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+.networth-stat-value {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.networth-stat-bar {
+    margin-top: var(--spacing-sm);
+    height: 4px;
+    border-radius: var(--radius-full);
+    width: 60%;
+}
+
+@media (max-width: 992px) {
+    .dashboard-row-1 {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .networth-body {
+        grid-template-columns: 1fr;
+    }
+
+    .networth-side-cards {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .networth-stat-card {
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-categories {
+        grid-template-columns: 1fr;
+    }
+}
