@@ -55,14 +55,14 @@ export const financialScore = {
 };
 
 export const dashboardTopAssets = [
-  { name: 'ICICI Prudential Multicap', type: 'Mutual Fund', invested: '₹40,000', currentValue: '₹50,000', returnPct: '+25.0%', returnLabel: 'return', emoji: '📈', bg: '#E8F5EE', rank: 1 },
-  { name: 'Property Highway', type: 'Real Estate', invested: 'Purchased ₹40L', currentValue: '₹45,00,000', returnPct: '+12.5%', returnLabel: 'return', emoji: '🏠', bg: '#EFF6FF', rank: 2 },
-  { name: 'Savings Account', type: 'Savings', invested: 'Liquid asset', currentValue: '₹5,00,000', returnPct: '+6.5%', returnLabel: 'interest', emoji: '💰', bg: '#FFFBEB', rank: 3 },
+  { name: 'ICICI Prudential Multicap', type: 'Mutual Fund', invested: '₹40,000', currentValue: '₹50,000', returnPct: '+25.0%', returnLabel: 'return', bg: '#E8F5EE', rank: 1 },
+  { name: 'Property Highway', type: 'Real Estate', invested: 'Purchased ₹40L', currentValue: '₹45,00,000', returnPct: '+12.5%', returnLabel: 'return', bg: '#EFF6FF', rank: 2 },
+  { name: 'Savings Account', type: 'Savings', invested: 'Liquid asset', currentValue: '₹5,00,000', returnPct: '+6.5%', returnLabel: 'interest', bg: '#FFFBEB', rank: 3 },
 ];
 
 export const dashboardGoals = [
-  { name: 'Kia Seltos', emoji: '🚗', target: '₹14,00,000', due: 'Due Apr 2029', status: 'at-risk', statusLabel: 'At Risk', pct: 43, current: '₹6.05L', total: '₹14L' },
-  { name: 'Build Home', emoji: '🏠', target: '₹15,00,000', due: 'Due Feb 2030', status: 'possible', statusLabel: 'Possible', pct: 67, current: '₹10.1L', total: '₹15L' },
+  { name: 'Kia Seltos', category: 'Vehicle', target: '₹14,00,000', due: 'Due Apr 2029', status: 'at-risk', statusLabel: 'At Risk', pct: 43, current: '₹6.05L', total: '₹14L' },
+  { name: 'Build Home', category: 'Home', target: '₹15,00,000', due: 'Due Feb 2030', status: 'possible', statusLabel: 'Possible', pct: 67, current: '₹10.1L', total: '₹15L' },
 ];
 
 export const dashboardAlerts = [
@@ -119,10 +119,10 @@ export const liabilities = [
 ];
 
 export const goals = [
-  { id: 1, title: 'Buy a Car', category: 'Vehicle', subLabel: 'Kia Seltos', emoji: '🚗', currentAmount: 350000, goalAmount: 800000, targetDate: '2027-06-01', status: 'On Track', monthlySip: 12000, suggestedSip: null, insight: "✓ At this pace you'll hit your goal 2 months early.", linkedSources: [] },
-  { id: 2, title: 'Dream Home Down Payment', category: 'Home', subLabel: 'Own House', emoji: '🏠', currentAmount: 500000, goalAmount: 2000000, targetDate: '2030-12-01', status: 'Possible', monthlySip: 18000, suggestedSip: 21000, insight: "↗ Increase SIP by ₹3,000/mo to get back on track.", linkedSources: [] },
-  { id: 3, title: 'MBA Education Fund', category: 'Education', subLabel: 'IIM / ISB', emoji: '🎓', currentAmount: 120000, goalAmount: 1500000, targetDate: '2028-07-01', status: 'At Risk', monthlySip: 4000, suggestedSip: 49300, insight: "⚠ Needs ₹49,300/mo. Consider revising target date to Jan 2030.", linkedSources: [] },
-  { id: 4, title: 'Retirement Corpus', category: 'Retirement', subLabel: 'Financial Freedom', emoji: '🌴', currentAmount: 220000, goalAmount: 50000000, targetDate: '2055-01-01', status: 'On Track', monthlySip: 8000, suggestedSip: null, insight: "✓ Starting early is your biggest advantage. Compounding works in your favour.", linkedSources: [] },
+  { id: 1, title: 'Buy a Car', category: 'Vehicle', subLabel: 'Kia Seltos', emoji: null, currentAmount: 350000, goalAmount: 800000, targetDate: '2027-06-01', status: 'On Track', monthlySip: 12000, suggestedSip: null, insight: "✓ At this pace you'll hit your goal 2 months early.", linkedSources: [] },
+  { id: 2, title: 'Dream Home Down Payment', category: 'Home', subLabel: 'Own House', emoji: null, currentAmount: 500000, goalAmount: 2000000, targetDate: '2030-12-01', status: 'Possible', monthlySip: 18000, suggestedSip: 21000, insight: "↗ Increase SIP by ₹3,000/mo to get back on track.", linkedSources: [] },
+  { id: 3, title: 'MBA Education Fund', category: 'Education', subLabel: 'IIM / ISB', emoji: null, currentAmount: 120000, goalAmount: 1500000, targetDate: '2028-07-01', status: 'At Risk', monthlySip: 4000, suggestedSip: 49300, insight: "⚠ Needs ₹49,300/mo. Consider revising target date to Jan 2030.", linkedSources: [] },
+  { id: 4, title: 'Retirement Corpus', category: 'Retirement', subLabel: 'Financial Freedom', emoji: null, currentAmount: 220000, goalAmount: 50000000, targetDate: '2055-01-01', status: 'On Track', monthlySip: 8000, suggestedSip: null, insight: "✓ Starting early is your biggest advantage. Compounding works in your favour.", linkedSources: [] },
 ];
 
 export const insurancePolicies = [
@@ -179,17 +179,8 @@ export const getStatusBg = (status) => {
 };
 
 export const getCategoryIcon = (category) => {
-  const icons = {
-    Vehicle: '🚗',
-    Home: '🏠',
-    Education: '🎓',
-    Marriage: '💍',
-    Vacation: '✈️',
-    Emergency: '🛡️',
-    Retirement: '🏖️',
-    Other: '🎯',
-  };
-  return icons[category] || '🎯';
+  // Returns category key string — use getCatIcon() from utils/icons.jsx for SVG rendering
+  return category || 'Other';
 };
 
 export const assetAllocation = [

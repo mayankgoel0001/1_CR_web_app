@@ -7,6 +7,7 @@ import {
     dashboardAlerts,
     dashboardNetWorthHero
 } from '../../data/mockData';
+import { ICONS, getCatIcon, getAssetIcon } from '../../utils/icons';
 import './DashboardPage.css';
 
 export default function DashboardPage() {
@@ -195,8 +196,8 @@ export default function DashboardPage() {
                     <div className="snap-assets">
                         {dashboardTopAssets.map((asset, idx) => (
                             <div key={idx} className="snap-asset">
-                                <div className={`snap-rank r${asset.rank}`}>{asset.rank === 1 ? '🥇' : asset.rank === 2 ? '🥈' : '🥉'}</div>
-                                <div className="snap-asset-icon" style={{ background: asset.bg }}>{asset.emoji}</div>
+                                <div className={`snap-rank r${asset.rank}`}>{asset.rank === 1 ? ICONS.rankGold : asset.rank === 2 ? ICONS.rankSilver : ICONS.rankBronze}</div>
+                                <div className="snap-asset-icon" style={{ background: asset.bg }}>{getAssetIcon(asset.type)}</div>
                                 <div className="snap-asset-info">
                                     <div className="snap-asset-name">{asset.name}</div>
                                     <div className="snap-asset-type">{asset.type} · {asset.invested}</div>
@@ -228,7 +229,7 @@ export default function DashboardPage() {
                         {dashboardGoals.map((goal, idx) => (
                             <div key={idx} className={`goal-row ${goal.status}`}>
                                 <div className="goal-row-top">
-                                    <span className="goal-emoji">{goal.emoji}</span>
+                                    <span className="goal-emoji">{getCatIcon(goal.category || 'Other')}</span>
                                     <div className="goal-row-info">
                                         <div className="goal-row-name">{goal.name}</div>
                                         <div className="goal-row-meta">Target {goal.target} · {goal.due}</div>
@@ -324,7 +325,7 @@ export default function DashboardPage() {
 
                     {/* Next Action */}
                     <div className="action-card">
-                        <div className="action-tag">⚡ Next Big Milestone</div>
+                        <div className="action-tag">{ICONS.lightning} Next Big Milestone</div>
                         <div className="action-title">Secure Your Future</div>
                         <div className="action-desc">You have 2 upcoming high-value expenses in 2025. Set up a dedicated fund today to stay on track.</div>
                         <div className="action-footer">
@@ -338,14 +339,14 @@ export default function DashboardPage() {
                         <div className="quick-title">Quick Actions</div>
                         <div className="quick-grid">
                             {[
-                                { label: 'Add Asset', icon: '💼', bg: '#E8F5EE' },
-                                { label: 'Add Debt', icon: '💳', bg: '#FEE2E2' },
-                                { label: 'New Goal', icon: '🚩', bg: '#FEF3C7' },
-                                { label: 'Tax Rep', icon: '📄', bg: '#EFF6FF' },
-                                { label: 'Insurance', icon: '🛡', bg: '#F5F3FF' },
-                                { label: 'Calculate', icon: '🧮', bg: '#ECFDF5' },
-                                { label: 'Scenarios', icon: '📈', bg: '#FFF7ED' },
-                                { label: 'Learn', icon: '📚', bg: '#F0FDF4' },
+                                { label: 'Add Asset', icon: ICONS.briefcase, bg: '#E8F5EE' },
+                                { label: 'Add Debt', icon: ICONS.creditCard, bg: '#FEE2E2' },
+                                { label: 'New Goal', icon: ICONS.flag, bg: '#FEF3C7' },
+                                { label: 'Tax Rep', icon: ICONS.document, bg: '#EFF6FF' },
+                                { label: 'Insurance', icon: ICONS.shield, bg: '#F5F3FF' },
+                                { label: 'Calculate', icon: ICONS.calculator, bg: '#ECFDF5' },
+                                { label: 'Scenarios', icon: ICONS.chartLine, bg: '#FFF7ED' },
+                                { label: 'Learn', icon: ICONS.books, bg: '#F0FDF4' },
                             ].map((action, idx) => (
                                 <div key={idx} className="quick-item">
                                     <div className="quick-icon" style={{ background: action.bg }}>{action.icon}</div>

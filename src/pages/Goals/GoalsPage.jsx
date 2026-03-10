@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { goals, assets, formatCurrency, getCategoryIcon } from '../../data/mockData';
+import { ICONS, getCatIcon } from '../../utils/icons';
 import Modal from '../../components/common/Modal';
 import './GoalsPage.css';
 
@@ -37,14 +38,14 @@ const FILTERS = [
 ];
 
 const CATEGORY_OPTS = [
-    { value: 'Vehicle', emoji: '🚗' },
-    { value: 'Home', emoji: '🏠' },
-    { value: 'Education', emoji: '🎓' },
-    { value: 'Retirement', emoji: '🌴' },
-    { value: 'Travel', emoji: '✈️' },
-    { value: 'Wedding', emoji: '💍' },
-    { value: 'Medical', emoji: '🏥' },
-    { value: 'Other', emoji: '🎯' },
+    { value: 'Vehicle', icon: ICONS.Vehicle },
+    { value: 'Home', icon: ICONS.Home },
+    { value: 'Education', icon: ICONS.Education },
+    { value: 'Retirement', icon: ICONS.Retirement },
+    { value: 'Travel', icon: ICONS.Travel },
+    { value: 'Wedding', icon: ICONS.Wedding },
+    { value: 'Medical', icon: ICONS.Medical },
+    { value: 'Other', icon: ICONS.Other },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -55,6 +56,7 @@ export default function GoalsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('Vehicle');
     const [selectedAssets, setSelectedAssets] = useState([]);
+    const [sortBy, setSortBy] = useState('targetDate');
     const barRefs = useRef({});
 
     // Animate progress bars after mount / filter change
@@ -87,9 +89,19 @@ export default function GoalsPage() {
         behind: behindList.length,
     };
 
-    const filtered = activeFilter === 'all'
+    const filteredRaw = activeFilter === 'all'
         ? localGoals
         : localGoals.filter((g) => statusClass(g.status) === activeFilter);
+
+    // Sort logic
+    const filtered = [...filteredRaw].sort((a, b) => {
+        switch (sortBy) {
+            case 'targetDate': return new Date(a.targetDate) - new Date(b.targetDate);
+            case 'progress': return (b.currentAmount / b.goalAmount) - (a.currentAmount / a.goalAmount);
+            case 'saved': return b.currentAmount - a.currentAmount;
+            default: return 0;
+        }
+    });
 
     // ── Mini donut arcs ──────────────────────────────────────────────────────
     const C = 2 * Math.PI * 44; // ≈ 276.46
@@ -124,7 +136,7 @@ export default function GoalsPage() {
             id: Date.now().toString(),
             title: fd.get('goalTitle'),
             category: selectedCategory,
-            emoji: catOpt?.emoji || '🎯',
+            emoji: null,
             subLabel: selectedCategory,
             currentAmount: initialAmount,
             goalAmount: targetAmount,
@@ -164,7 +176,7 @@ export default function GoalsPage() {
                 <div className="gp-metric dark">
                     <div className="gp-mc-top">
                         <span className="gp-mc-label light">Net Saved</span>
-                        <div className="gp-mc-icon">💎</div>
+                        <div className="gp-mc-icon glow-icon">{ICONS.diamond}</div>
                     </div>
                     <div className="gp-mc-value accent">{fmtShort(totalSaved)}</div>
                     <div className="gp-mc-badge glow">{overallPct}% overall</div>
@@ -172,7 +184,7 @@ export default function GoalsPage() {
                 <div className="gp-metric">
                     <div className="gp-mc-top">
                         <span className="gp-mc-label">On Track</span>
-                        <div className="gp-mc-icon">✅</div>
+                        <div className="gp-mc-icon green-icon">{ICONS.check}</div>
                     </div>
                     <div className="gp-mc-value green">{onTrackList.length}</div>
                     <div className="gp-mc-badge green-bg">Goals healthy</div>
@@ -180,7 +192,7 @@ export default function GoalsPage() {
                 <div className="gp-metric">
                     <div className="gp-mc-top">
                         <span className="gp-mc-label">Possible</span>
-                        <div className="gp-mc-icon">↗</div>
+                        <div className="gp-mc-icon teal-icon">{ICONS.trendUp}</div>
                     </div>
                     <div className="gp-mc-value teal">{possibleList.length}</div>
                     <div className="gp-mc-badge teal-bg">Needs small push</div>
@@ -188,7 +200,7 @@ export default function GoalsPage() {
                 <div className="gp-metric">
                     <div className="gp-mc-top">
                         <span className="gp-mc-label">At Risk</span>
-                        <div className="gp-mc-icon">⚠️</div>
+                        <div className="gp-mc-icon orange-icon">{ICONS.alert}</div>
                     </div>
                     <div className="gp-mc-value orange">{atRiskList.length}</div>
                     <div className="gp-mc-badge orange-bg">{atRiskList[0]?.title || '—'}</div>
@@ -196,7 +208,7 @@ export default function GoalsPage() {
                 <div className="gp-metric">
                     <div className="gp-mc-top">
                         <span className="gp-mc-label">Total Target</span>
-                        <div className="gp-mc-icon">🎯</div>
+                        <div className="gp-mc-icon blue-icon">{ICONS.target}</div>
                     </div>
                     <div className="gp-mc-value blue">{fmtShort(totalTarget)}</div>
                     <div className="gp-mc-badge blue-bg">{localGoals.length} goals combined</div>
@@ -284,12 +296,13 @@ export default function GoalsPage() {
                             <div className="gp-list-title">
                                 {FILTERS.find((f) => f.key === activeFilter)?.label || 'All Goals'}
                             </div>
-                            <div className="gp-list-sub">{filtered.length} goal{filtered.length !== 1 ? 's' : ''} &middot; sorted by target date</div>
+                            <div className="gp-list-sub">{filtered.length} goal{filtered.length !== 1 ? 's' : ''} &middot; sorted by {sortBy === 'targetDate' ? 'target date' : sortBy === 'progress' ? 'progress' : 'amount saved'}</div>
                         </div>
-                        <div className="gp-sort-btn">
-                            Sort: Target Date
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
-                        </div>
+                        <select className="gp-sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                            <option value="targetDate">Sort: Target Date</option>
+                            <option value="progress">Sort: Progress</option>
+                            <option value="saved">Sort: Amount Saved</option>
+                        </select>
                     </div>
 
                     <div className="gp-list-wrap">
@@ -303,7 +316,7 @@ export default function GoalsPage() {
                                 <div key={goal.id} className={`gp-goal-item ${sc}`}>
                                     <div className="gi-row1">
                                         <div className={`gi-emoji ${sc}`}>
-                                            {goal.emoji || getCategoryIcon(goal.category)}
+                                            {getCatIcon(goal.category)}
                                         </div>
                                         <div className="gi-info">
                                             <div className="gi-name">{goal.title}</div>
@@ -325,24 +338,24 @@ export default function GoalsPage() {
                                             style={{ width: 0, transition: 'width 1s cubic-bezier(0.16,1,0.3,1)' }}
                                         />
                                     </div>
-                                    <div className="gi-meta-row">
+                                    <div className="gi-row3">
                                         <div className="gi-meta-item">
                                             <div className="gi-meta-lbl">Target Date</div>
                                             <div className="gi-meta-val">
                                                 {new Date(goal.targetDate).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
                                             </div>
                                         </div>
-                                        <div className="gi-meta-div" />
+                                        <div className="gi-divider" />
                                         <div className="gi-meta-item">
                                             <div className="gi-meta-lbl">Monthly SIP</div>
                                             <div className="gi-meta-val">{goal.monthlySip ? fmtINR(goal.monthlySip) : '—'}</div>
                                         </div>
-                                        <div className="gi-meta-div" />
+                                        <div className="gi-divider" />
                                         <div className="gi-meta-item">
                                             <div className="gi-meta-lbl">Time Left</div>
                                             <div className="gi-meta-val">{ml} months</div>
                                         </div>
-                                        <div className="gi-meta-div" />
+                                        <div className="gi-divider" />
                                         <div className="gi-meta-item">
                                             <div className="gi-meta-lbl">Gap to Goal</div>
                                             <div className="gi-meta-val">{fmtINR(gap)}</div>
@@ -386,7 +399,7 @@ export default function GoalsPage() {
                                     <div key={goal.id} className="gp-sip-item">
                                         <div className="gp-sip-item-top">
                                             <div className={`gp-sip-emoji ${sc}`}>
-                                                {goal.emoji || getCategoryIcon(goal.category)}
+                                                {getCatIcon(goal.category)}
                                             </div>
                                             <div className="gp-sip-name">{goal.title}</div>
                                             <div className={`gp-sip-status ${sc}`}>{goal.status}</div>
@@ -428,7 +441,7 @@ export default function GoalsPage() {
                                     className={`gp-cat-opt${selectedCategory === c.value ? ' sel' : ''}`}
                                     onClick={() => setSelectedCategory(c.value)}
                                 >
-                                    <div className="gp-cat-icon">{c.emoji}</div>
+                                    <div className="gp-cat-icon">{c.icon}</div>
                                     <div className="gp-cat-lbl">{c.value}</div>
                                 </div>
                             ))}
@@ -460,7 +473,7 @@ export default function GoalsPage() {
                     <div className="modal-form-group">
                         <label>Target Date *</label>
                         <div className="modal-input-wrapper">
-                            <span className="modal-input-icon">📅</span>
+                            <span className="modal-input-icon">{ICONS.calendar}</span>
                             <input type="date" name="targetDate" required />
                         </div>
                     </div>

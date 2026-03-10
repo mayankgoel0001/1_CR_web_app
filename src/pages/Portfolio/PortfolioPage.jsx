@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { assets, liabilities, netWorthData, assetAllocation, liabilityAllocation, formatCurrency } from '../../data/mockData';
+import { ICONS } from '../../utils/icons';
 
 // Format number with commas, no rupee sign
 function formatNumber(num) {
@@ -149,7 +150,7 @@ export default function PortfolioPage() {
                     <div className="port-card dark-card">
                         <div className="port-card-top">
                             <span className="port-card-label">NET WORTH</span>
-                            <div className="port-card-icon diamond-icon">💎</div>
+                            <div className="port-card-icon diamond-icon">{ICONS.diamondLg}</div>
                         </div>
                         <div className="port-card-val text-white">{formatCurrency(netWorthData.currentNetWorth)}</div>
                         <div className="port-card-badge badge-green dark-badge">
@@ -162,7 +163,7 @@ export default function PortfolioPage() {
                     <div className="port-card">
                         <div className="port-card-top">
                             <span className="port-card-label">TOTAL ASSETS</span>
-                            <div className="port-card-icon chart-icon">📈</div>
+                            <div className="port-card-icon chart-icon">{ICONS.chartUp}</div>
                         </div>
                         <div className="port-card-val text-blue">{formatCurrency(totalAssets)}</div>
                         <div className="port-card-badge badge-gray">
@@ -175,7 +176,7 @@ export default function PortfolioPage() {
                     <div className="port-card">
                         <div className="port-card-top">
                             <span className="port-card-label">TOTAL LIABILITIES</span>
-                            <div className="port-card-icon card-icon">💳</div>
+                            <div className="port-card-icon card-icon">{ICONS.creditCardLg}</div>
                         </div>
                         <div className="port-card-val text-red">{formatCurrency(totalLiabilities)}</div>
                         <div className="port-card-badge badge-light-red">
@@ -188,7 +189,7 @@ export default function PortfolioPage() {
                     <div className="port-card">
                         <div className="port-card-top">
                             <span className="port-card-label">TOTAL GAIN / LOSS</span>
-                            <div className="port-card-icon bar-icon">📊</div>
+                            <div className="port-card-icon bar-icon">{ICONS.barChartLg}</div>
                         </div>
                         <div className="port-card-val text-green">+{formatCurrency(57200)}</div>
                         <div className="port-card-badge badge-light-green">

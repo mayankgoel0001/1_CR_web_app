@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { MdVerifiedUser, MdHealthAndSafety, MdDirectionsCar, MdBusiness, MdDescription, MdAttachMoney, MdCalendarToday, MdCategory } from 'react-icons/md';
 import { insurancePolicies, formatCurrency } from '../../data/mockData';
+import { getInsuranceIcon } from '../../utils/icons';
 import Modal from '../../components/common/Modal';
 import './InsurancePage.css';
 
-const typeIcons = { Life: '🛡️', Health: '🏥', Vehicle: '🚗', Home: '🏠', Travel: '✈️', Term: '📋' };
 const filters = ['All', 'Life', 'Health', 'Vehicle', 'Home', 'Travel', 'Term'];
 const policyTypes = ['Life', 'Health', 'Vehicle', 'Home', 'Travel', 'Term'];
 const frequencies = ['Annual', 'Semi-Annual', 'Quarterly', 'Monthly'];
@@ -73,7 +73,7 @@ export default function InsurancePage() {
                     <div key={policy.id} className="policy-card card">
                         <div className="policy-card-header">
                             <div className="policy-insurer">
-                                <div className="policy-icon">{typeIcons[policy.type] || '📋'}</div>
+                                <div className="policy-icon">{getInsuranceIcon(policy.type)}</div>
                                 <div>
                                     <h4>{policy.insurer}</h4>
                                     <p>{policy.policyNumber}</p>
