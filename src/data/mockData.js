@@ -119,10 +119,10 @@ export const liabilities = [
 ];
 
 export const goals = [
-  { id: 1, title: 'Buy a Car', category: 'Vehicle', currentAmount: 350000, goalAmount: 800000, targetDate: '2027-06-01', status: 'On Track', linkedSources: [] },
-  { id: 2, title: 'Dream Home Down Payment', category: 'Home', currentAmount: 500000, goalAmount: 2000000, targetDate: '2030-12-01', status: 'Possible', linkedSources: [] },
-  { id: 3, title: 'MBA Education Fund', category: 'Education', currentAmount: 120000, goalAmount: 1500000, targetDate: '2028-07-01', status: 'At Risk', linkedSources: [] },
-  { id: 4, title: 'Retirement Corpus', category: 'Retirement', currentAmount: 220000, goalAmount: 50000000, targetDate: '2055-01-01', status: 'On Track', linkedSources: [] },
+  { id: 1, title: 'Buy a Car', category: 'Vehicle', subLabel: 'Kia Seltos', emoji: '🚗', currentAmount: 350000, goalAmount: 800000, targetDate: '2027-06-01', status: 'On Track', monthlySip: 12000, suggestedSip: null, insight: "✓ At this pace you'll hit your goal 2 months early.", linkedSources: [] },
+  { id: 2, title: 'Dream Home Down Payment', category: 'Home', subLabel: 'Own House', emoji: '🏠', currentAmount: 500000, goalAmount: 2000000, targetDate: '2030-12-01', status: 'Possible', monthlySip: 18000, suggestedSip: 21000, insight: "↗ Increase SIP by ₹3,000/mo to get back on track.", linkedSources: [] },
+  { id: 3, title: 'MBA Education Fund', category: 'Education', subLabel: 'IIM / ISB', emoji: '🎓', currentAmount: 120000, goalAmount: 1500000, targetDate: '2028-07-01', status: 'At Risk', monthlySip: 4000, suggestedSip: 49300, insight: "⚠ Needs ₹49,300/mo. Consider revising target date to Jan 2030.", linkedSources: [] },
+  { id: 4, title: 'Retirement Corpus', category: 'Retirement', subLabel: 'Financial Freedom', emoji: '🌴', currentAmount: 220000, goalAmount: 50000000, targetDate: '2055-01-01', status: 'On Track', monthlySip: 8000, suggestedSip: null, insight: "✓ Starting early is your biggest advantage. Compounding works in your favour.", linkedSources: [] },
 ];
 
 export const insurancePolicies = [
