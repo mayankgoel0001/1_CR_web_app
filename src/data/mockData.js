@@ -25,9 +25,9 @@ export const userData = {
 };
 
 export const financialScore = {
-  overall: 85,
+  overall: 72,
   rating: 'Excellent',
-  description: "Your financial health is in the top 5% of users. You've demonstrated strong management.",
+  description: "You are in the top 15% of wealth creators in your age bracket.",
   lastUpdated: '2026-03-09',
   categories: [
     { name: 'Liquidity', score: 92, icon: 'liquidity', status: 'Strong', color: '#16A34A' },
@@ -51,6 +51,38 @@ export const financialScore = {
   improvements: [
     { category: 'Savings Rate', score: 65, detail: 'Increase monthly savings by ₹5,000 to reach 45% savings rate' },
     { category: 'Protection', score: 72, detail: 'Consider adding term insurance for adequate coverage' },
+  ],
+};
+
+export const dashboardTopAssets = [
+  { name: 'ICICI Prudential Multicap', type: 'Mutual Fund', invested: '₹40,000', currentValue: '₹50,000', returnPct: '+25.0%', returnLabel: 'return', emoji: '📈', bg: '#E8F5EE', rank: 1 },
+  { name: 'Property Highway', type: 'Real Estate', invested: 'Purchased ₹40L', currentValue: '₹45,00,000', returnPct: '+12.5%', returnLabel: 'return', emoji: '🏠', bg: '#EFF6FF', rank: 2 },
+  { name: 'Savings Account', type: 'Savings', invested: 'Liquid asset', currentValue: '₹5,00,000', returnPct: '+6.5%', returnLabel: 'interest', emoji: '💰', bg: '#FFFBEB', rank: 3 },
+];
+
+export const dashboardGoals = [
+  { name: 'Kia Seltos', emoji: '🚗', target: '₹14,00,000', due: 'Due Apr 2029', status: 'at-risk', statusLabel: 'At Risk', pct: 43, current: '₹6.05L', total: '₹14L' },
+  { name: 'Build Home', emoji: '🏠', target: '₹15,00,000', due: 'Due Feb 2030', status: 'possible', statusLabel: 'Possible', pct: 67, current: '₹10.1L', total: '₹15L' },
+];
+
+export const dashboardAlerts = [
+  { type: 'warning', tag: 'High Priority', title: 'Kia Seltos At Risk', desc: 'Insurance expiring in 3 days. Renew to avoid lapse.', link: 'View Goal →' },
+  { type: 'danger', tag: 'Coverage Gap', title: 'Missing Life Insurance', desc: 'Liabilities are 4× higher than your protection coverage.', link: 'View Plans →' },
+];
+
+export const dashboardNetWorthHero = {
+  totalNetWorth: '₹78.69L',
+  changeText: '▲ 4.2% from last month',
+  totalAssets: '₹84.19L',
+  liabilities: '₹5.50L',
+  cashRunway: '14 Months',
+  cashRunwaySub: 'Liquid reserves',
+  roi: '12.8%',
+  roiSub: 'Portfolio return',
+  allocation: [
+    { name: 'Investments', pct: '76.2%', width: '76%', color: '#34D399' },
+    { name: 'Real Estate', pct: '17.8%', width: '18%', color: '#60A5FA' },
+    { name: 'Savings', pct: '6.0%', width: '6%', color: '#FCD34D' },
   ],
 };
 

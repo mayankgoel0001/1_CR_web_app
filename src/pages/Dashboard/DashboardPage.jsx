@@ -1,234 +1,362 @@
-import { useState } from 'react';
-import { MdCheck, MdArrowForward, MdTrendingUp } from 'react-icons/md';
-import { BsShieldCheck, BsCreditCard2Front, BsPiggyBank, BsGraphUpArrow, BsDroplet } from 'react-icons/bs';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
     financialScore,
-    netWorthData,
-    alerts,
-    formatCurrency,
-    formatCurrencyFull,
+    dashboardTopAssets,
+    dashboardGoals,
+    dashboardAlerts,
+    dashboardNetWorthHero
 } from '../../data/mockData';
 import './DashboardPage.css';
 
-const categoryIcons = {
-    liquidity: { icon: BsDroplet, bg: '#E8F5E9', color: '#16A34A' },
-    debt: { icon: BsCreditCard2Front, bg: '#DBEAFE', color: '#2563EB' },
-    savings: { icon: BsPiggyBank, bg: '#FEF3C7', color: '#F59E0B' },
-    investments: { icon: BsGraphUpArrow, bg: '#E8F5E9', color: '#16A34A' },
-    protection: { icon: BsShieldCheck, bg: '#DBEAFE', color: '#2563EB' },
-};
+export default function DashboardPage() {
+    // Quick animation on mount
+    useEffect(() => {
+        const bars = document.querySelectorAll('.anim-bar, .bd-bar, .goal-prog-fill, .chart-stat-bar');
+        bars.forEach(bar => {
+            const finalWidth = bar.getAttribute('data-width') || bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => { bar.style.width = finalWidth; }, 300);
+        });
 
-function ScoreGauge({ score, rating, description }) {
-    const radius = 52;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (score / 100) * circumference;
+        const gauges = document.querySelectorAll('.gauge-fill');
+        gauges.forEach(gauge => {
+            const finalArray = gauge.getAttribute('data-dasharray');
+            gauge.style.strokeDasharray = '0 264';
+            setTimeout(() => { gauge.style.strokeDasharray = finalArray; }, 300);
+        });
+    }, []);
 
-    return (
-        <div className="score-card card">
-            <div className="score-gauge-wrapper">
-                <svg className="score-gauge-svg" viewBox="0 0 130 130">
-                    <circle className="score-gauge-bg" cx="65" cy="65" r={radius} />
-                    <circle
-                        className="score-gauge-fill"
-                        cx="65"
-                        cy="65"
-                        r={radius}
-                        stroke="#1B8C4E"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={offset}
-                    />
-                </svg>
-                <div className="score-gauge-value">
-                    <div className="score-number">{score}</div>
-                    <div className="score-label">out of 100</div>
-                </div>
-            </div>
-            <div className="score-info">
-                <div className="score-status-badge">Financial Status</div>
-                <h2>{rating}</h2>
-                <p>{description}</p>
-                <button className="btn-primary">Detailed Report</button>
-            </div>
-        </div>
-    );
-}
-
-function AlertsCard() {
-    return (
-        <div className="alerts-card card">
-            <h3>Active Alerts</h3>
-            {alerts.length === 0 ? (
-                <div className="alerts-empty">
-                    <div className="alerts-empty-icon">
-                        <MdCheck />
-                    </div>
-                    <div className="alerts-empty-text">
-                        <h4>You're all caught up!</h4>
-                        <p>No active alerts at this moment.</p>
-                    </div>
-                </div>
-            ) : (
-                <div>
-                    {alerts.map((alert, i) => (
-                        <div key={i}>{alert.message}</div>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-}
-
-function ScoreCategoryCards() {
-    const iconMap = ['liquidity', 'debt', 'savings', 'investments', 'protection'];
+    const [chartFilter, setChartFilter] = useState('1Y');
 
     return (
-        <div className="dashboard-categories">
-            {financialScore.categories.map((cat, i) => {
-                const iconConfig = categoryIcons[iconMap[i]];
-                const IconComp = iconConfig.icon;
-                const statusClass =
-                    cat.status === 'Strong' ? 'badge-strong' :
-                        cat.status === 'Good' ? 'badge-good' :
-                            cat.status === 'Attention' ? 'badge-attention' : 'badge-danger';
+        <div className="dashboard-page-container">
+            {/* SVG defs for gauge and chart gradients */}
+            <svg width="0" height="0" style={{ position: 'absolute' }}>
+                <defs>
+                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#2D7A4F" />
+                        <stop offset="100%" stopColor="#34D399" />
+                    </linearGradient>
+                    <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#2D7A4F" stopOpacity="0.18" />
+                        <stop offset="100%" stopColor="#2D7A4F" stopOpacity="0" />
+                    </linearGradient>
+                </defs>
+            </svg>
 
-                return (
-                    <div key={cat.name} className="category-card card">
-                        <div className="category-card-header">
-                            <div
-                                className="category-icon"
-                                style={{ background: iconConfig.bg, color: iconConfig.color }}
-                            >
-                                <IconComp />
-                            </div>
-                            <span className={`badge ${statusClass}`}>{cat.status}</span>
-                        </div>
-                        <div className="category-name">{cat.name}</div>
-                        <div className="category-score">
-                            <span className="value">{cat.score}</span>
-                            <span className="total">/100</span>
-                        </div>
-                        <div className="progress-bar">
-                            <div
-                                className="progress-bar-fill"
-                                style={{
-                                    width: `${cat.score}%`,
-                                    background: cat.color,
-                                }}
-                            />
-                        </div>
-                        <div className="category-action">
-                            Take Action <MdArrowForward />
-                        </div>
-                    </div>
-                );
-            })}
-        </div>
-    );
-}
+            {/* ROW 1: Score + Net Worth Hero + Alerts */}
+            <div className="row-1">
 
-function NetWorthSection() {
-    const [activeFilter, setActiveFilter] = useState('6 Months');
-
-    return (
-        <div className="networth-card card">
-            <div className="networth-header">
-                <div className="networth-title">
-                    <h3>Total Net Worth</h3>
-                    <p>Consolidated view of your financial standing</p>
-                </div>
-                <div className="networth-filters">
-                    <div className="networth-change">
-                        <MdTrendingUp /> +{netWorthData.changePercent}% this year
-                    </div>
-                    {['6 Months', '1 Year'].map((f) => (
-                        <button
-                            key={f}
-                            className={`networth-filter-btn ${activeFilter === f ? 'active' : ''}`}
-                            onClick={() => setActiveFilter(f)}
-                        >
-                            {f}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="networth-body">
-                <div>
-                    <div className="networth-balance-label">Current Balance</div>
-                    <div className="networth-balance-value">
-                        {formatCurrencyFull(netWorthData.currentNetWorth)}
-                    </div>
-                    <div className="networth-chart-container">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={netWorthData.history} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                                <defs>
-                                    <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#1B8C4E" stopOpacity={0.15} />
-                                        <stop offset="95%" stopColor="#1B8C4E" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
-                                <XAxis
-                                    dataKey="month"
-                                    axisLine={false}
-                                    tickLine={false}
-                                    tick={{ fill: '#9CA3AF', fontSize: 12, dy: 10 }}
-                                />
-                                <YAxis hide />
-                                <Tooltip
-                                    formatter={(val) => formatCurrency(val)}
-                                    contentStyle={{
-                                        borderRadius: '10px',
-                                        border: '1px solid #E5E7EB',
-                                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                                        fontSize: '0.85rem',
+                {/* Financial Health Score */}
+                <div className="score-card">
+                    <div className="score-card-title">Financial Health Score</div>
+                    <div className="score-main">
+                        <div className="gauge-wrap">
+                            <svg viewBox="0 0 100 100" style={{ transform: 'rotate(135deg)', overflow: 'visible' }}>
+                                <circle className="gauge-bg" cx="50" cy="50" r="42" strokeDasharray="198 264" strokeDashoffset="0" />
+                                <circle className="gauge-fill" cx="50" cy="50" r="42"
+                                    stroke="url(#gaugeGrad)"
+                                    data-dasharray={`${198 * (financialScore.overall / 100)} 264`}
+                                    style={{
+                                        strokeDashoffset: 0,
+                                        strokeLinecap: 'round',
+                                        fill: 'none',
+                                        strokeWidth: 10,
+                                        filter: 'drop-shadow(0 0 6px rgba(52,211,153,0.5))',
+                                        transition: 'stroke-dasharray 1.4s cubic-bezier(0.16, 1, 0.3, 1)'
                                     }}
                                 />
-                                <Area
-                                    type="monotone"
-                                    dataKey="netWorth"
-                                    stroke="#1B8C4E"
-                                    strokeWidth={2.5}
-                                    fill="url(#netWorthGradient)"
-                                    dot={false}
-                                    activeDot={{ r: 5, fill: '#1B8C4E' }}
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                            </svg>
+                            <div className="gauge-center">
+                                <span className="gauge-number">{financialScore.overall}</span>
+                                <span className="gauge-denom">/ 100</span>
+                            </div>
+                        </div>
+                        <div className="score-info">
+                            <div className="score-status">{financialScore.rating}</div>
+                            <div className="score-desc">{financialScore.description}</div>
+                            <a className="score-link" href="#report">
+                                View Full Report
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginLeft: '4px' }}>
+                                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    {/* Score mini breakdown */}
+                    <div className="score-breakdown">
+                        {financialScore.categories.map((cat, idx) => {
+                            const colorClass = cat.name === 'Liquidity' || cat.name === 'Investments' ? 'green'
+                                : cat.name === 'Savings Rate' ? 'orange'
+                                    : cat.name === 'Protection' ? 'purple'
+                                        : 'blue'; // Debt Management
+                            return (
+                                <div className="breakdown-row" key={idx}>
+                                    <span className="bd-label">{cat.name === 'Debt Management' ? 'Debt' : cat.name === 'Savings Rate' ? 'Savings' : cat.name}</span>
+                                    <div className="bd-bar-wrap">
+                                        <div className={`bd-bar ${colorClass}`} data-width={`${cat.score}%`}></div>
+                                    </div>
+                                    <span className={`bd-val ${colorClass}`}>{cat.score}</span>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
 
-                <div className="networth-side-cards">
-                    <div className="networth-stat-card">
-                        <div className="networth-stat-label">Total Assets</div>
-                        <div className="networth-stat-value">{formatCurrency(netWorthData.totalAssets)}</div>
-                        <div className="networth-stat-bar" style={{ background: '#16A34A' }} />
+                {/* Net Worth Hero */}
+                <div className="networth-hero">
+                    <div className="nw-top">
+                        <div>
+                            <div className="nw-label">Total Net Worth</div>
+                            <div className="nw-value">₹<span>{dashboardNetWorthHero.totalNetWorth.replace('₹', '').replace('L', '')}</span>L</div>
+                            <div className="nw-change">{dashboardNetWorthHero.changeText}</div>
+                        </div>
+                        <div className="nw-stats">
+                            <div className="nw-stat">
+                                <div className="nw-stat-label">Total Assets</div>
+                                <div className="nw-stat-val">{dashboardNetWorthHero.totalAssets}</div>
+                            </div>
+                            <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', width: '80px', marginLeft: 'auto' }}></div>
+                            <div className="nw-stat">
+                                <div className="nw-stat-label">Liabilities</div>
+                                <div className="nw-stat-val red">{dashboardNetWorthHero.liabilities}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="networth-stat-card">
-                        <div className="networth-stat-label">Total Liabilities</div>
-                        <div className="networth-stat-value">{formatCurrency(netWorthData.totalLiabilities)}</div>
-                        <div className="networth-stat-bar" style={{ background: '#EF4444' }} />
+                    <div className="nw-bottom">
+                        <div className="nw-metric">
+                            <div className="nw-metric-label">Cash Runway</div>
+                            <div className="nw-metric-val">{dashboardNetWorthHero.cashRunway}</div>
+                            <div className="nw-metric-sub">{dashboardNetWorthHero.cashRunwaySub}</div>
+                        </div>
+                        <div className="nw-divider-v"></div>
+                        <div className="nw-metric">
+                            <div className="nw-metric-label">ROI (YTD)</div>
+                            <div className="nw-metric-val" style={{ color: 'var(--accent)' }}>{dashboardNetWorthHero.roi}</div>
+                            <div className="nw-metric-sub">{dashboardNetWorthHero.roiSub}</div>
+                        </div>
+                    </div>
+                    {/* Asset Allocation Bar */}
+                    <div className="nw-alloc">
+                        <div className="nw-alloc-label">Portfolio Allocation</div>
+                        <div className="nw-alloc-bar">
+                            {dashboardNetWorthHero.allocation.map((alloc, idx) => (
+                                <div key={idx} className="alloc-seg anim-bar" data-width={alloc.width} style={{ background: alloc.color, marginLeft: idx > 0 ? '2px' : '0' }}></div>
+                            ))}
+                        </div>
+                        <div className="nw-alloc-legend">
+                            {dashboardNetWorthHero.allocation.map((alloc, idx) => (
+                                <div key={idx} className="alloc-item">
+                                    <div className="alloc-dot" style={{ background: alloc.color }}></div>
+                                    <span className="alloc-name">{alloc.name}</span>
+                                    <span className="alloc-pct">{alloc.pct}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Active Alerts */}
+                <div className="alerts-card">
+                    <div className="alerts-header">
+                        <div className="alerts-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: '7px' }}>
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                            </svg>
+                            Active Alerts
+                        </div>
+                        <span className="alerts-count">{dashboardAlerts.length} Action{dashboardAlerts.length !== 1 ? 's' : ''} Required</span>
+                    </div>
+                    {dashboardAlerts.map((alert, idx) => (
+                        <div key={idx} className={`alert-item ${alert.type}`}>
+                            <span className="alert-tag">{alert.tag}</span>
+                            <div className="alert-title">{alert.title}</div>
+                            <div className="alert-desc">{alert.desc}</div>
+                            <span className="alert-link">{alert.link}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* ROW 2: Portfolio Snapshot + Goals Progress */}
+            <div className="row-2">
+
+                {/* Top Performing Assets */}
+                <div className="portfolio-snap">
+                    <div className="snap-header">
+                        <div>
+                            <div className="snap-title">Top Performing Assets</div>
+                            <div className="snap-sub">Highest return in your portfolio</div>
+                        </div>
+                        <Link to="/portfolio" className="snap-link" style={{ textDecoration: 'none' }}>View All →</Link>
+                    </div>
+                    <div className="snap-assets">
+                        {dashboardTopAssets.map((asset, idx) => (
+                            <div key={idx} className="snap-asset">
+                                <div className={`snap-rank r${asset.rank}`}>{asset.rank === 1 ? '🥇' : asset.rank === 2 ? '🥈' : '🥉'}</div>
+                                <div className="snap-asset-icon" style={{ background: asset.bg }}>{asset.emoji}</div>
+                                <div className="snap-asset-info">
+                                    <div className="snap-asset-name">{asset.name}</div>
+                                    <div className="snap-asset-type">{asset.type} · {asset.invested}</div>
+                                </div>
+                                <div className="snap-asset-right">
+                                    <div className="snap-asset-val">{asset.currentValue}</div>
+                                    <div className={`snap-asset-ret ${asset.returnPct.startsWith('-') ? 'neg' : 'pos'}`}>
+                                        {asset.returnPct.startsWith('-') ? '▼' : '▲'} {asset.returnPct} {asset.returnLabel}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Goals Progress */}
+                <div className="goals-strip">
+                    <div className="goals-header">
+                        <div>
+                            <div className="goals-title">Goals Progress</div>
+                            <div style={{ fontSize: '11.5px', color: 'var(--text-3)', marginTop: '2px' }}>Track your financial milestones</div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span className="goals-count-pill">{dashboardGoals.length} Active</span>
+                            <Link to="/goals" className="goals-link" style={{ textDecoration: 'none' }}>View All →</Link>
+                        </div>
+                    </div>
+                    <div className="goals-list">
+                        {dashboardGoals.map((goal, idx) => (
+                            <div key={idx} className={`goal-row ${goal.status}`}>
+                                <div className="goal-row-top">
+                                    <span className="goal-emoji">{goal.emoji}</span>
+                                    <div className="goal-row-info">
+                                        <div className="goal-row-name">{goal.name}</div>
+                                        <div className="goal-row-meta">Target {goal.target} · {goal.due}</div>
+                                    </div>
+                                    <span className={`goal-status-badge ${goal.status}`}>{goal.statusLabel}</span>
+                                </div>
+                                <div className="goal-row-bottom">
+                                    <div className="goal-prog-wrap">
+                                        <div className="goal-prog-fill" data-width={`${goal.pct}%`}></div>
+                                    </div>
+                                    <span className="goal-pct">{goal.pct}%</span>
+                                    <span className="goal-amount-pair">{goal.current} / {goal.total}</span>
+                                </div>
+                            </div>
+                        ))}
+
+                        <div style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>Combined goal completion</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div style={{ width: '80px', height: '5px', background: '#E5EDE8', borderRadius: '99px', overflow: 'hidden' }}>
+                                    <div className="anim-bar" data-width="56%" style={{ height: '100%', background: 'linear-gradient(90deg,#2D7A4F,#34D399)', borderRadius: '99px' }}></div>
+                                </div>
+                                <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--green)' }}>56%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
 
-export default function DashboardPage() {
-    return (
-        <div className="dashboard">
-            <div className="dashboard-row-1">
-                <ScoreGauge
-                    score={financialScore.overall}
-                    rating={financialScore.rating}
-                    description={financialScore.description}
-                />
-                <AlertsCard />
+            {/* ROW 3: Net Worth Chart + Right Panel */}
+            <div className="row-3">
+
+                {/* Net Worth Chart */}
+                <div className="chart-card">
+                    <div className="chart-header">
+                        <div>
+                            <div className="chart-title">Net Worth Growth</div>
+                            <div className="chart-sub">Your wealth trajectory over time</div>
+                        </div>
+                        <div className="chart-filters">
+                            {['6M', '1Y', 'All'].map(filter => (
+                                <button
+                                    key={filter}
+                                    className={`filter-pill ${chartFilter === filter ? 'active' : ''}`}
+                                    onClick={() => setChartFilter(filter)}
+                                >
+                                    {filter}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="chart-value-row">
+                        <div className="chart-value">₹78,69,000</div>
+                        <div className="chart-badge">▲ +12.5% this year</div>
+                    </div>
+
+                    {/* SVG Area Chart */}
+                    <div className="chart-area">
+                        <svg className="chart-svg" viewBox="0 0 700 160" preserveAspectRatio="none">
+                            <line x1="0" y1="40" x2="700" y2="40" stroke="#E4EDE8" strokeWidth="1" />
+                            <line x1="0" y1="80" x2="700" y2="80" stroke="#E4EDE8" strokeWidth="1" />
+                            <line x1="0" y1="120" x2="700" y2="120" stroke="#E4EDE8" strokeWidth="1" />
+                            <path d="M0,145 C50,140 100,130 150,120 C200,110 230,100 280,88 C330,76 360,68 410,55 C460,42 500,36 550,28 C600,20 650,18 700,15 L700,155 L0,155 Z" fill="url(#chartFill)" />
+                            <path d="M0,145 C50,140 100,130 150,120 C200,110 230,100 280,88 C330,76 360,68 410,55 C460,42 500,36 550,28 C600,20 650,18 700,15" fill="none" stroke="#2D7A4F" strokeWidth="2.5" strokeLinecap="round" />
+                            <circle cx="700" cy="15" r="5" fill="#2D7A4F" />
+                            <circle cx="700" cy="15" r="9" fill="rgba(45,122,79,0.2)" />
+                            <text x="0" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">JAN</text>
+                            <text x="116" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">MAR</text>
+                            <text x="233" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">MAY</text>
+                            <text x="349" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">JUL</text>
+                            <text x="466" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">SEP</text>
+                            <text x="676" y="158" fontSize="10" fill="#2D7A4F" fontFamily="DM Sans,sans-serif" fontWeight="700">NOV</text>
+                        </svg>
+                    </div>
+
+                    <div className="chart-bottom">
+                        <div className="chart-stat">
+                            <div className="chart-stat-label">Total Assets</div>
+                            <div className="chart-stat-val">₹84.19L</div>
+                            <div className="chart-stat-bar green" data-width="94%"></div>
+                        </div>
+                        <div className="chart-divider"></div>
+                        <div className="chart-stat">
+                            <div className="chart-stat-label">Total Liabilities</div>
+                            <div className="chart-stat-val" style={{ color: 'var(--red)' }}>₹5.50L</div>
+                            <div className="chart-stat-bar red" data-width="6%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Panel */}
+                <div className="right-panel">
+
+                    {/* Next Action */}
+                    <div className="action-card">
+                        <div className="action-tag">⚡ Next Big Milestone</div>
+                        <div className="action-title">Secure Your Future</div>
+                        <div className="action-desc">You have 2 upcoming high-value expenses in 2025. Set up a dedicated fund today to stay on track.</div>
+                        <div className="action-footer">
+                            <span className="action-link">Explore Planning Tools →</span>
+                            <span className="action-impact">+15 pts</span>
+                        </div>
+                    </div>
+
+                    {/* Quick Actions */}
+                    <div className="quick-card">
+                        <div className="quick-title">Quick Actions</div>
+                        <div className="quick-grid">
+                            {[
+                                { label: 'Add Asset', icon: '💼', bg: '#E8F5EE' },
+                                { label: 'Add Debt', icon: '💳', bg: '#FEE2E2' },
+                                { label: 'New Goal', icon: '🚩', bg: '#FEF3C7' },
+                                { label: 'Tax Rep', icon: '📄', bg: '#EFF6FF' },
+                                { label: 'Insurance', icon: '🛡', bg: '#F5F3FF' },
+                                { label: 'Calculate', icon: '🧮', bg: '#ECFDF5' },
+                                { label: 'Scenarios', icon: '📈', bg: '#FFF7ED' },
+                                { label: 'Learn', icon: '📚', bg: '#F0FDF4' },
+                            ].map((action, idx) => (
+                                <div key={idx} className="quick-item">
+                                    <div className="quick-icon" style={{ background: action.bg }}>{action.icon}</div>
+                                    <span className="quick-label">{action.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <ScoreCategoryCards />
-            <NetWorthSection />
         </div>
     );
 }

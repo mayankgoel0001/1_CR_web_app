@@ -2,28 +2,38 @@ import { NavLink } from 'react-router-dom';
 import {
     MdDashboard,
     MdAccountBalanceWallet,
+    MdOutlineAccountBox,
+    MdOutlineCreditCard,
     MdFlag,
-    MdInsights,
-    MdCalculate,
     MdVerifiedUser,
-    MdAssessment,
+    MdCalculate,
+    MdTimeline,
     MdPerson,
     MdSettings,
 } from 'react-icons/md';
-import { RiPlantFill } from 'react-icons/ri';
 import './Sidebar.css';
 
-const navItems = [
-    { path: '/', label: 'Dashboard', icon: MdDashboard },
-    { path: '/portfolio', label: 'Portfolio', icon: MdAccountBalanceWallet },
-    { path: '/goals', label: 'Goals', icon: MdFlag },
-    { path: '/scenario-analysis', label: 'Scenario Analysis', icon: MdInsights },
-    { path: '/calculators', label: 'Calculators', icon: MdCalculate },
-    { path: '/insurance', label: 'Insurance', icon: MdVerifiedUser },
-    { path: '/reports', label: 'Reports', icon: MdAssessment },
+const overviewItems = [
+    { path: '/', label: 'Dashboard', icon: MdDashboard }
 ];
 
-const bottomItems = [
+const portfolioItems = [
+    { path: '/portfolio', label: 'Portfolio', icon: MdTimeline },
+    // { path: '/my-assets', label: 'My Assets', icon: MdOutlineAccountBox },
+    // { path: '/my-debts', label: 'My Debts', icon: MdOutlineCreditCard },
+];
+
+const planningItems = [
+    { path: '/goals', label: 'Goals', icon: MdFlag },
+    { path: '/insurance', label: 'Insurance', icon: MdVerifiedUser },
+];
+
+const toolsItems = [
+    { path: '/calculators', label: 'Calculators', icon: MdCalculate },
+    { path: '/scenario-analysis', label: 'Scenario Analysis', icon: MdTimeline },
+];
+
+const accountItems = [
     { path: '/profile', label: 'Profile', icon: MdPerson },
     { path: '/settings', label: 'Settings', icon: MdSettings },
 ];
@@ -33,58 +43,85 @@ export default function Sidebar({ isOpen, onClose }) {
         <>
             {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
             <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+
+                {/* LOGO AREA */}
                 <div className="sidebar-logo">
-                    <div className="sidebar-logo-icon">
-                        <RiPlantFill />
+                    <div className="logo-mark">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                            <path d="M12 2L3 7l9 5 9-5-9-5z" /><path d="M3 17l9 5 9-5" /><path d="M3 12l9 5 9-5" />
+                        </svg>
                     </div>
-                    <div className="sidebar-logo-text">
-                        <h2>1 Cr Club</h2>
-                        <span>Wealth Management</span>
+                    <div className="logo-text">
+                        <span className="logo-name">LifeWealth</span>
+                        <span className="logo-tag">1CRCLUB</span>
                     </div>
                 </div>
 
+                {/* NAVIGATION LINKS */}
                 <nav className="sidebar-nav">
-                    {navItems.map((item) => (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            end={item.path === '/'}
-                            className={({ isActive }) =>
-                                `sidebar-link ${isActive ? 'active' : ''}`
-                            }
-                            onClick={onClose}
-                        >
-                            <span className="sidebar-link-icon">
-                                <item.icon />
-                            </span>
-                            {item.label}
-                        </NavLink>
-                    ))}
 
-                    <div className="sidebar-section-label">Account</div>
+                    <div className="nav-group">
+                        <div className="nav-label">Overview</div>
+                        {overviewItems.map(item => (
+                            <NavLink key={item.path} to={item.path} end={item.path === '/'} onClick={onClose} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                                <item.icon className="nav-icon" />
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </div>
 
-                    {bottomItems.map((item) => (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            className={({ isActive }) =>
-                                `sidebar-link ${isActive ? 'active' : ''}`
-                            }
-                            onClick={onClose}
-                        >
-                            <span className="sidebar-link-icon">
-                                <item.icon />
-                            </span>
-                            {item.label}
-                        </NavLink>
-                    ))}
+                    <div className="nav-group">
+                        <div className="nav-label">Portfolio</div>
+                        {portfolioItems.map(item => (
+                            <NavLink key={item.path} to={item.path} onClick={onClose} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                                <item.icon className="nav-icon" />
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </div>
+
+                    <div className="nav-group">
+                        <div className="nav-label">Planning</div>
+                        {planningItems.map(item => (
+                            <NavLink key={item.path} to={item.path} onClick={onClose} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                                <item.icon className="nav-icon" />
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </div>
+
+                    <div className="nav-group">
+                        <div className="nav-label">Tools</div>
+                        {toolsItems.map(item => (
+                            <NavLink key={item.path} to={item.path} onClick={onClose} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                                <item.icon className="nav-icon" />
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </div>
+
+                    <div className="nav-group">
+                        <div className="nav-label">Account</div>
+                        {accountItems.map(item => (
+                            <NavLink key={item.path} to={item.path} onClick={onClose} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                                <item.icon className="nav-icon" />
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </div>
+
                 </nav>
 
-                <div className="sidebar-upgrade">
-                    <div className="sidebar-upgrade-label">Upgrade Pro</div>
-                    <p>Get advanced insights and planning tools.</p>
-                    <button className="sidebar-upgrade-btn">Upgrade Now</button>
+                {/* BOTTOM UPGRADE CARD */}
+                <div className="sidebar-bottom">
+                    <div className="upgrade-card">
+                        <div className="upgrade-label">Upgrade to</div>
+                        <div className="upgrade-title">LifeWealth PRO</div>
+                        <div className="upgrade-sub">Advanced insights & planning</div>
+                        <button className="upgrade-btn">Get Unlimited Access</button>
+                    </div>
                 </div>
+
             </aside>
         </>
     );

@@ -17,6 +17,37 @@ const categoryColors = {
     other: '#6B7280',
 };
 
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="custom-chart-tooltip" style={{
+                background: '#111827',
+                border: 'none',
+                borderRadius: '10px',
+                padding: '12px 16px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+                color: 'white'
+            }}>
+                <p style={{ fontWeight: 700, margin: '0 0 8px 0', fontSize: '13px' }}>{label}</p>
+                {payload.map((entry, index) => (
+                    <div key={index} style={{
+                        color: entry.name === 'Assets' ? '#A7F3D0' :
+                            entry.name === 'Liabilities' ? '#FECACA' : '#BFDBFE',
+                        fontSize: '13px',
+                        marginBottom: '4px',
+                        display: 'flex',
+                        gap: '6px'
+                    }}>
+                        <span>{entry.name}:</span>
+                        <span style={{ fontWeight: 600 }}>{formatCurrency(entry.value)}</span>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+    return null;
+};
+
 export default function PortfolioPage() {
     const [timeFilter, setTimeFilter] = useState('6M');
 
@@ -90,30 +121,74 @@ export default function PortfolioPage() {
 
     return (
         <div className="portfolio-page">
-            {/* Net Worth Hero */}
-            <div className="portfolio-hero">
-                <div className="portfolio-hero-header">
-                    <h2>Portfolio Overview</h2>
-                    <div className="portfolio-time-filters">
-                        {['1M', '3M', '6M', '1Y', 'All'].map(f => (
-                            <button key={f} className={`portfolio-time-btn ${timeFilter === f ? 'active' : ''}`} onClick={() => setTimeFilter(f)}>
-                                {f}
-                            </button>
-                        ))}
+            {/* Portfolio Header & Cards */}
+            <div className="portfolio-overview-section">
+                <div className="portfolio-overview-header">
+                    <div className="portfolio-titles">
+                        <h2>Portfolio Overview</h2>
+                        <p>Track all your assets, liabilities and net worth in one place</p>
+                    </div>
+                    <div className="portfolio-actions">
+                        <button className="btn-secondary" onClick={() => setIsLiabilityModalOpen(true)}>
+                            + Add Liability
+                        </button>
+                        <button className="btn-primary" onClick={() => setIsAssetModalOpen(true)}>
+                            + Add Asset
+                        </button>
                     </div>
                 </div>
-                <div className="portfolio-hero-stats">
-                    <div className="portfolio-stat">
-                        <label>Net Worth</label>
-                        <div className="value">{formatCurrency(netWorthData.currentNetWorth)}</div>
+
+                <div className="portfolio-cards-grid">
+                    {/* 1. Net Worth Card (Dark Variante) */}
+                    <div className="port-card dark-card">
+                        <div className="port-card-top">
+                            <span className="port-card-label">NET WORTH</span>
+                            <div className="port-card-icon diamond-icon">💎</div>
+                        </div>
+                        <div className="port-card-val text-white">{formatCurrency(netWorthData.currentNetWorth)}</div>
+                        <div className="port-card-badge badge-green dark-badge">
+                            ▲ +4.2% this month
+                        </div>
+                        <div className="port-card-sub text-muted-white">Assets minus liabilities</div>
                     </div>
-                    <div className="portfolio-stat">
-                        <label>Total Assets</label>
-                        <div className="value positive">{formatCurrency(totalAssets)}</div>
+
+                    {/* 2. Total Assets Card */}
+                    <div className="port-card">
+                        <div className="port-card-top">
+                            <span className="port-card-label">TOTAL ASSETS</span>
+                            <div className="port-card-icon chart-icon">📈</div>
+                        </div>
+                        <div className="port-card-val text-blue">{formatCurrency(totalAssets)}</div>
+                        <div className="port-card-badge badge-gray">
+                            {localAssets.length} assets tracked
+                        </div>
+                        <div className="port-card-sub text-muted">Across {new Set(localAssets.map(a => a.category)).size} categories</div>
                     </div>
-                    <div className="portfolio-stat">
-                        <label>Total Liabilities</label>
-                        <div className="value negative">{formatCurrency(totalLiabilities)}</div>
+
+                    {/* 3. Total Liabilities Card */}
+                    <div className="port-card">
+                        <div className="port-card-top">
+                            <span className="port-card-label">TOTAL LIABILITIES</span>
+                            <div className="port-card-icon card-icon">💳</div>
+                        </div>
+                        <div className="port-card-val text-red">{formatCurrency(totalLiabilities)}</div>
+                        <div className="port-card-badge badge-light-red">
+                            {localLiabilities.length} active loans
+                        </div>
+                        <div className="port-card-sub text-muted">{formatCurrency(totalMonthlyEMI)}/mo total EMI</div>
+                    </div>
+
+                    {/* 4. Total Gain/Loss Card */}
+                    <div className="port-card">
+                        <div className="port-card-top">
+                            <span className="port-card-label">TOTAL GAIN / LOSS</span>
+                            <div className="port-card-icon bar-icon">📊</div>
+                        </div>
+                        <div className="port-card-val text-green">+{formatCurrency(57200)}</div>
+                        <div className="port-card-badge badge-light-green">
+                            ▲ +9.4% overall return
+                        </div>
+                        <div className="port-card-sub text-muted">Unrealised portfolio gain</div>
                     </div>
                 </div>
             </div>
@@ -121,53 +196,71 @@ export default function PortfolioPage() {
             {/* Net Worth Chart + Allocation */}
             <div className="portfolio-grid">
                 <div className="card" style={{ padding: 'var(--spacing-xl)' }}>
-                    <h4 style={{ fontWeight: 600, marginBottom: '16px' }}>Net Worth Trend</h4>
-                    <ResponsiveContainer width="100%" height={280}>
-                        <AreaChart data={netWorthData.history} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                    <div className="chart-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                        <div>
+                            <h4 style={{ fontWeight: 700, fontSize: '1.15rem', marginBottom: '4px' }}>Net Worth Trend</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', margin: 0 }}>Assets vs Liabilities over time</p>
+
+                            {/* Custom Legend */}
+                            <div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2D7A4F' }}></div>
+                                    Assets
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }}></div>
+                                    Liabilities
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3B82F6' }}></div>
+                                    Net Worth
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="portfolio-time-filters">
+                            {['1M', '3M', '6M', '1Y', 'All'].map(f => (
+                                <button key={f} className={`portfolio-time-btn ${timeFilter === f ? 'active' : ''}`} onClick={() => setTimeFilter(f)}>
+                                    {f}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <ResponsiveContainer width="100%" height={260}>
+                        <AreaChart data={netWorthData.history} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="gradAssets" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#16A34A" stopOpacity={0.15} />
-                                    <stop offset="95%" stopColor="#16A34A" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#2D7A4F" stopOpacity={0.1} />
+                                    <stop offset="95%" stopColor="#2D7A4F" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="gradNetWorth" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
-                                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
-                                </linearGradient>
-                                <linearGradient id="gradLiabilities" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#EF4444" stopOpacity={0.15} />
-                                    <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1} />
+                                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12, dy: 10 }} />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 11, dy: 10, fontWeight: 500 }} />
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: '#9CA3AF', fontSize: 11 }}
-                                tickFormatter={(val) => val >= 100000 ? `₹${(val / 100000).toFixed(1)}L` : `₹${(val / 1000).toFixed(0)}K`}
-                                width={60}
+                                tick={{ fill: '#9CA3AF', fontSize: 11, fontWeight: 500 }}
+                                tickFormatter={(val) => val >= 100000 ? `₹${(val / 100000).toFixed(0)}L` : `₹${(val / 1000).toFixed(0)}K`}
+                                width={50}
                             />
-                            <Tooltip
-                                contentStyle={{ background: 'white', border: '1px solid #E5E7EB', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', padding: '12px 16px' }}
-                                labelStyle={{ fontWeight: 700, marginBottom: '8px', color: '#1F2937' }}
-                                formatter={(val, name) => [formatCurrency(val), name]}
-                            />
-                            <Legend
-                                verticalAlign="bottom"
-                                height={36}
-                                iconType="circle"
-                                wrapperStyle={{ paddingTop: '20px' }}
-                                formatter={(value) => <span style={{ color: '#4B5563', fontWeight: 500, fontSize: '12px', fontFamily: 'Inter, sans-serif' }}>{value}</span>}
-                            />
-                            <Area type="monotone" dataKey="assets" stroke="#16A34A" strokeWidth={2.5} fill="url(#gradAssets)" dot={false} activeDot={{ r: 5, fill: '#16A34A', stroke: 'white', strokeWidth: 2 }} name="Assets" />
-                            <Area type="monotone" dataKey="netWorth" stroke="#2563EB" strokeWidth={2.5} fill="url(#gradNetWorth)" dot={false} activeDot={{ r: 5, fill: '#2563EB', stroke: 'white', strokeWidth: 2 }} name="Net Worth" />
-                            <Area type="monotone" dataKey="liabilities" stroke="#EF4444" strokeWidth={2.5} fill="url(#gradLiabilities)" dot={false} activeDot={{ r: 5, fill: '#EF4444', stroke: 'white', strokeWidth: 2 }} name="Liabilities" />
+                            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#E5E7EB', strokeWidth: 1, strokeDasharray: '4 4' }} />
+
+                            <Area type="monotone" dataKey="assets" stroke="#2D7A4F" strokeWidth={2.5} fill="url(#gradAssets)" dot={false} activeDot={{ r: 5, fill: '#2D7A4F', stroke: 'white', strokeWidth: 2 }} name="Assets" />
+                            <Area type="monotone" dataKey="netWorth" stroke="#3B82F6" strokeWidth={2.5} fill="url(#gradNetWorth)" dot={false} activeDot={{ r: 5, fill: '#3B82F6', stroke: 'white', strokeWidth: 2 }} name="Net Worth" />
+                            {/* Rendering Liabilities last so it's on top and dashed */}
+                            <Area type="monotone" dataKey="liabilities" stroke="#EF4444" strokeWidth={2} strokeDasharray="4 4" fill="none" dot={false} activeDot={{ r: 5, fill: '#EF4444', stroke: 'white', strokeWidth: 2 }} name="Liabilities" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
 
                 <div className="allocation-card card">
                     <h4>Asset Allocation</h4>
+                    <br />
                     <DonutChart
                         data={assetAllocation}
                         height={260}
@@ -183,31 +276,40 @@ export default function PortfolioPage() {
 
             {/* Assets Table */}
             <div className="portfolio-section">
-                <div className="portfolio-section-header">
-                    <h3>My Assets</h3>
-                    <button className="btn-primary" onClick={() => setIsAssetModalOpen(true)}>+ Add Asset</button>
-                </div>
                 <div className="assets-table-card card">
-                    <div className="assets-search">
-                        <input type="text" placeholder="Search assets..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-                            <option value="All">All Categories</option>
-                            <option value="savings">Savings</option>
-                            <option value="investments">Investments</option>
-                            <option value="retirement">Retirement</option>
-                            <option value="crypto">Crypto</option>
-                            <option value="vehicles">Vehicles</option>
-                        </select>
+                    {/* Header row */}
+                    <div className="liab-table-header">
+                        <div className="liab-table-titles">
+                            <h3>My Assets</h3>
+                            <p>{filteredAssets.length} asset{filteredAssets.length !== 1 ? 's' : ''} tracked</p>
+                        </div>
+                        <div className="liab-table-controls">
+                            <div className="liab-search-wrap">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" placeholder="Search assets..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                            </div>
+                            <select className="liab-filter-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+                                <option value="All">All Categories</option>
+                                <option value="savings">Savings</option>
+                                <option value="investments">Investments</option>
+                                <option value="retirement">Retirement</option>
+                                <option value="crypto">Crypto</option>
+                                <option value="vehicles">Vehicles</option>
+                            </select>
+                            <button className="btn-primary" onClick={() => setIsAssetModalOpen(true)}>+ Add</button>
+                        </div>
                     </div>
-                    <div className="table-responsive">
-                        <table className="assets-table">
+
+                    {/* Scrollable table */}
+                    <div className="liab-table-scroll-wrap">
+                        <table className="liab-table">
                             <thead>
                                 <tr>
-                                    <th>Asset Name</th>
+                                    <th>Asset</th>
                                     <th>Category</th>
                                     <th>Current Value</th>
                                     <th>Purchase Price</th>
-                                    <th>Gain/Loss</th>
+                                    <th>Gain / Loss</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -217,18 +319,23 @@ export default function PortfolioPage() {
                                     return (
                                         <tr key={asset.id}>
                                             <td>
-                                                <div className="asset-name-cell">
-                                                    <div className="asset-icon-dot" style={{ background: categoryColors[asset.category] }} />
-                                                    {asset.name}
+                                                <div className="liab-name-cell">
+                                                    <div className="liab-dot" style={{ background: categoryColors[asset.category] }} />
+                                                    <div>
+                                                        <div className="liab-name">{asset.name}</div>
+                                                        <div className="liab-sub">{asset.category?.replace('_', ' ')}</div>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <span className="asset-category-pill">{asset.subType || asset.category}</span>
                                             </td>
-                                            <td style={{ fontWeight: 600 }}>{formatCurrency(asset.currentValue)}</td>
-                                            <td>{formatCurrency(asset.purchasePrice)}</td>
-                                            <td className={gain >= 0 ? 'gain-positive' : 'gain-negative'} style={{ fontWeight: 600 }}>
-                                                {gain >= 0 ? '+' : ''}{formatCurrency(gain)} ({gainPct}%)
+                                            <td className="liab-val-neutral">{formatCurrency(asset.currentValue)}</td>
+                                            <td className="liab-val-neutral">{formatCurrency(asset.purchasePrice)}</td>
+                                            <td>
+                                                <span className={`liab-rate-badge ${gain >= 0 ? 'rate-green' : 'rate-red'}`}>
+                                                    {gain >= 0 ? '▲' : '▼'} {gain >= 0 ? '+' : ''}{formatCurrency(gain)} ({gainPct}%)
+                                                </span>
                                             </td>
                                         </tr>
                                     );
@@ -236,19 +343,83 @@ export default function PortfolioPage() {
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
 
             {/* Liabilities */}
             <div className="portfolio-section">
-                <div className="portfolio-section-header">
-                    <h3>My Liabilities</h3>
-                    <button className="btn-primary" onClick={() => setIsLiabilityModalOpen(true)}>+ Add Liability</button>
-                </div>
-
                 <div className="portfolio-grid">
+                    <div className="assets-table-card card">
+                        {/* Liabilities table header */}
+                        <div className="liab-table-header">
+                            <div className="liab-table-titles">
+                                <h3>My Liabilities</h3>
+                                <p>{filteredLiabilities.length} active loan{filteredLiabilities.length !== 1 ? 's' : ''} &amp; credit lines</p>
+                            </div>
+                            <div className="liab-table-controls">
+                                <div className="liab-search-wrap">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    <input type="text" placeholder="Search liabilities..." value={liabilitySearch} onChange={(e) => setLiabilitySearch(e.target.value)} />
+                                </div>
+                                <select className="liab-filter-select" value={liabilityCategoryFilter} onChange={(e) => setLiabilityCategoryFilter(e.target.value)}>
+                                    <option value="All">All Types</option>
+                                    <option value="Long-term Liabilities">Long-term</option>
+                                    <option value="Current Liabilities">Current</option>
+                                </select>
+                                <button className="btn-primary" onClick={() => setIsLiabilityModalOpen(true)}>+ Add</button>
+                            </div>
+                        </div>
+
+                        {/* Scrollable table */}
+                        <div className="liab-table-scroll-wrap">
+                            <table className="liab-table">
+                                <thead>
+                                    <tr>
+                                        <th>Liability</th>
+                                        <th>Lender</th>
+                                        <th>Outstanding</th>
+                                        <th>EMI / Month</th>
+                                        <th>Interest Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredLiabilities.map(l => {
+                                        const rateColor = l.interestRate >= 30 ? 'rate-red' : l.interestRate >= 15 ? 'rate-orange' : 'rate-green';
+                                        return (
+                                            <tr key={l.id}>
+                                                <td>
+                                                    <div className="liab-name-cell">
+                                                        <div className="liab-dot" style={{ background: l.interestRate >= 30 ? '#EF4444' : l.interestRate >= 15 ? '#F59E0B' : '#3B82F6' }} />
+                                                        <div>
+                                                            <div className="liab-name">{l.name}</div>
+                                                            <div className="liab-sub">{l.lender} · {l.type}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="liab-val-neutral">{l.lender}</td>
+                                                <td className="liab-val-red">{formatCurrency(l.currentBalance)}</td>
+                                                <td className="liab-val-neutral">{formatCurrency(l.monthlyPayment)}/mo</td>
+                                                <td>
+                                                    <span className={`liab-rate-badge ${rateColor}`}>{l.interestRate}% p.a.</span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="liab-table-footer">
+                            <span className="liab-footer-label">Total monthly EMI obligation</span>
+                            <span className="liab-footer-val">{formatCurrency(totalMonthlyEMI)} / month</span>
+                        </div>
+                    </div>
+
                     <div className="allocation-card card">
                         <h4>Liability Allocation</h4>
+                        <br/>
                         <DonutChart
                             data={liabilityAllocation}
                             height={260}
@@ -259,41 +430,6 @@ export default function PortfolioPage() {
                             centerLabel={totalLiabilities >= 10000000 ? `₹${(totalLiabilities / 10000000).toFixed(1)}Cr` : `₹${(totalLiabilities / 100000).toFixed(1)}L`}
                             centerSub="Total Liabilities"
                         />
-                    </div>
-
-                    <div className="assets-table-card card">
-                        <div className="assets-search">
-                            <input type="text" placeholder="Search liabilities..." value={liabilitySearch} onChange={(e) => setLiabilitySearch(e.target.value)} />
-                            <select value={liabilityCategoryFilter} onChange={(e) => setLiabilityCategoryFilter(e.target.value)}>
-                                <option value="All">All Types</option>
-                                <option value="Long-term Liabilities">Long-term</option>
-                                <option value="Current Liabilities">Current</option>
-                            </select>
-                        </div>
-                        <div className="table-responsive">
-                            <table className="assets-table">
-                                <thead>
-                                    <tr>
-                                        <th>Liability</th>
-                                        <th>Lender</th>
-                                        <th>Outstanding</th>
-                                        <th>EMI</th>
-                                        <th>Interest Rate</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredLiabilities.map(l => (
-                                        <tr key={l.id}>
-                                            <td style={{ fontWeight: 500 }}>{l.name}</td>
-                                            <td>{l.lender}</td>
-                                            <td style={{ fontWeight: 600, color: '#EF4444' }}>{formatCurrency(l.currentBalance)}</td>
-                                            <td>{formatCurrency(l.monthlyPayment)}/mo</td>
-                                            <td>{l.interestRate}% p.a.</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
