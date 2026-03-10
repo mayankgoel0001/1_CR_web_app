@@ -52,8 +52,8 @@ export default function Sidebar({ isOpen, onClose }) {
                         </svg>
                     </div>
                     <div className="logo-text">
-                        <span className="logo-name">LifeWealth</span>
-                        <span className="logo-tag">1CRCLUB</span>
+                        <span className="logo-name">1CrClub</span>
+                        {/* <span className="logo-tag">1CRCLUB</span> */}
                     </div>
                 </div>
 
@@ -116,7 +116,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 <div className="sidebar-bottom">
                     <div className="upgrade-card">
                         <div className="upgrade-label">Upgrade to</div>
-                        <div className="upgrade-title">LifeWealth PRO</div>
+                        <div className="upgrade-title">1CrClub PRO</div>
                         <div className="upgrade-sub">Advanced insights & planning</div>
                         <button className="upgrade-btn">Get Unlimited Access</button>
                     </div>

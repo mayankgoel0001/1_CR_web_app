@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { assets, liabilities, netWorthData, assetAllocation, liabilityAllocation, formatCurrency } from '../../data/mockData';
+
+// Format number with commas, no rupee sign
+function formatNumber(num) {
+    if (num == null) return '';
+    return num.toLocaleString('en-IN');
+}
 import DonutChart from '../../components/Charts/DonutChart';
 import Modal from '../../components/common/Modal';
 import { MdAccountBalance, MdDriveEta, MdBusiness, MdHome, MdAttachMoney, MdShowChart, MdOutlineCategory, MdPerson, MdCalendarToday, MdOutlineEventNote } from 'react-icons/md';
@@ -307,9 +313,9 @@ export default function PortfolioPage() {
                                 <tr>
                                     <th>Asset</th>
                                     <th>Category</th>
-                                    <th>Current Value</th>
-                                    <th>Purchase Price</th>
-                                    <th>Gain / Loss</th>
+                                    <th style={{ textAlign: 'right' }}>Current Value (₹)</th>
+                                    <th style={{ textAlign: 'right' }}>Purchase Price (₹)</th>
+                                    <th style={{ textAlign: 'right' }}>Gain / Loss (₹)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -330,11 +336,11 @@ export default function PortfolioPage() {
                                             <td>
                                                 <span className="asset-category-pill">{asset.subType || asset.category}</span>
                                             </td>
-                                            <td className="liab-val-neutral">{formatCurrency(asset.currentValue)}</td>
-                                            <td className="liab-val-neutral">{formatCurrency(asset.purchasePrice)}</td>
-                                            <td>
+                                            <td className="liab-val-neutral right-align">{formatNumber(asset.currentValue)}</td>
+                                            <td className="liab-val-neutral right-align">{formatNumber(asset.purchasePrice)}</td>
+                                            <td className="right-align">
                                                 <span className={`liab-rate-badge ${gain >= 0 ? 'rate-green' : 'rate-red'}`}>
-                                                    {gain >= 0 ? '▲' : '▼'} {gain >= 0 ? '+' : ''}{formatCurrency(gain)} ({gainPct}%)
+                                                    {gain >= 0 ? '▲' : '▼'} {gain >= 0 ? '+' : ''}{formatNumber(gain)} ({gainPct}%)
                                                 </span>
                                             </td>
                                         </tr>
@@ -378,8 +384,8 @@ export default function PortfolioPage() {
                                     <tr>
                                         <th>Liability</th>
                                         <th>Lender</th>
-                                        <th>Outstanding</th>
-                                        <th>EMI / Month</th>
+                                        <th style={{ textAlign: 'right' }}>Outstanding (₹)</th>
+                                        <th style={{ textAlign: 'right' }}>EMI / Month (₹)</th>
                                         <th>Interest Rate</th>
                                     </tr>
                                 </thead>
@@ -398,8 +404,8 @@ export default function PortfolioPage() {
                                                     </div>
                                                 </td>
                                                 <td className="liab-val-neutral">{l.lender}</td>
-                                                <td className="liab-val-red">{formatCurrency(l.currentBalance)}</td>
-                                                <td className="liab-val-neutral">{formatCurrency(l.monthlyPayment)}/mo</td>
+                                                <td className="liab-val-red right-align">{formatNumber(l.currentBalance)}</td>
+                                                <td className="liab-val-neutral right-align">{formatNumber(l.monthlyPayment)}</td>
                                                 <td>
                                                     <span className={`liab-rate-badge ${rateColor}`}>{l.interestRate}% p.a.</span>
                                                 </td>

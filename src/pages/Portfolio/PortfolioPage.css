@@ -384,6 +384,10 @@
     vertical-align: middle;
 }
 
+.right-align {
+    text-align: right;
+}
+
 .liab-table tbody tr:last-child td {
     border-bottom: none;
 }
