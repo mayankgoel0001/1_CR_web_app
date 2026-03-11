@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { formatCurrency } from '../../data/mockData';
+import { ICONS } from '../../utils/icons';
 import './ScenarioAnalysisPage.css';
 
 const scenarios = [
     {
         key: 'debt',
         label: 'Debt Payoff',
+        icon: ICONS.creditCard,
         desc: 'Compare debt repayment strategies',
         fields: [
             { name: 'totalDebt', label: 'Total Debt Amount (₹)', defaultValue: 500000 },
@@ -21,6 +23,7 @@ const scenarios = [
     {
         key: 'emergency',
         label: 'Emergency Fund',
+        icon: ICONS.shield,
         desc: 'Calculate time to build emergency fund',
         fields: [
             { name: 'monthlyExpenses', label: 'Monthly Expenses (₹)', defaultValue: 60000 },
@@ -36,6 +39,7 @@ const scenarios = [
     {
         key: 'investment',
         label: 'Investment',
+        icon: ICONS.chartLine,
         desc: 'Project investment growth with risk tolerance',
         fields: [
             { name: 'initialInvestment', label: 'Initial Investment (₹)', defaultValue: 100000 },
@@ -52,6 +56,7 @@ const scenarios = [
     {
         key: 'purchase',
         label: 'Major Purchase',
+        icon: ICONS.wallet,
         desc: 'Analyze affordability of a large purchase',
         fields: [
             { name: 'purchasePrice', label: 'Purchase Price (₹)', defaultValue: 2000000 },
@@ -91,7 +96,7 @@ export default function ScenarioAnalysisPage() {
                         className={`scenario-tab ${activeTab === s.key ? 'active' : ''}`}
                         onClick={() => handleTabChange(s.key)}
                     >
-                        {s.label}
+                        {s.icon}{s.label}
                     </button>
                 ))}
             </div>

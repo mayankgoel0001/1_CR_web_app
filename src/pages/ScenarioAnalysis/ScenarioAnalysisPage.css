@@ -1,36 +1,59 @@
 .scenario-page {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 12px;
+}
+
+.scenario-page .page-header {
+    margin-bottom: 0;
 }
 
 .scenario-tabs {
     display: flex;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
+    background: var(--color-card, #FFFFFF);
+    border: 1px solid var(--color-border, #E4EDE8);
+    border-radius: 12px;
+    padding: 5px;
+    gap: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     flex-wrap: wrap;
 }
 
 .scenario-tab {
-    padding: 8px 16px;
-    border-radius: var(--radius-full);
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 8px;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary, #8FA99C);
     cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.scenario-tab.active {
-    background: var(--color-primary);
-    color: white;
-    border-color: var(--color-primary);
+    transition: all 0.18s;
+    white-space: nowrap;
 }
 
 .scenario-tab:hover:not(.active) {
-    background: var(--color-bg);
+    background: var(--color-bg, #F0F4F1);
+    color: var(--color-text, #4B6358);
+}
+
+.scenario-tab.active {
+    background: var(--color-primary, #2D7A4F);
+    color: #fff;
+    border-color: var(--color-primary, #2D7A4F);
+    box-shadow: 0 2px 8px rgba(45, 122, 79, 0.3);
+}
+
+.scenario-tab svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 .scenario-content {

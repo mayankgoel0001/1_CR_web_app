@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { MdHome, MdDirectionsCar, MdShowChart, MdAccountBalance, MdTrendingUp, MdAdd, MdRemove } from 'react-icons/md';
+import { ICONS } from '../../utils/icons';
 import { formatCurrency } from '../../data/mockData';
 import DonutChart from '../../components/Charts/DonutChart';
 import './CalculatorsPage.css';
 
 const calculators = [
-    { key: 'home-loan', label: 'Home Loan EMI', icon: MdHome },
-    { key: 'car-loan', label: 'Car Loan EMI', icon: MdDirectionsCar },
-    { key: 'sip', label: 'SIP Calculator', icon: MdShowChart },
-    { key: 'lumpsum', label: 'Lumpsum', icon: MdAccountBalance },
-    { key: 'future-value', label: 'Future Value', icon: MdTrendingUp },
+    { key: 'home-loan', label: 'Home Loan EMI', icon: ICONS.Home },
+    { key: 'car-loan', label: 'Car Loan EMI', icon: ICONS.Vehicle },
+    { key: 'sip', label: 'SIP Calculator', icon: ICONS.chartLine },
+    { key: 'lumpsum', label: 'Lumpsum', icon: ICONS.wallet },
+    { key: 'future-value', label: 'Future Value', icon: ICONS.trendUp },
 ];
 
 /* ── Reusable Slider Row ────────────────────────────── */
@@ -26,36 +26,40 @@ function SliderField({ label, value, setValue, min, max, step, minLabel, maxLabe
         setValue(clamp(value));
     };
 
+    const pct = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+
     return (
-        <div className="calc-slider-field">
-            <div className="calc-slider-header">
-                <span className="calc-slider-label">{label}</span>
-                <div className="calc-slider-controls">
-                    <button className="calc-pm-btn" onClick={() => setValue(clamp(value - step))}><MdRemove /></button>
-                    <div className="calc-slider-val-box">
-                        {prefix && <span className="calc-prefix">{prefix}</span>}
-                        <input
-                            type="number"
-                            className="calc-slider-input"
-                            value={value}
-                            onChange={handleInputChange}
-                            onBlur={handleInputBlur}
-                        />
-                        {suffix && <span className="calc-suffix">{suffix}</span>}
-                    </div>
-                    <button className="calc-pm-btn" onClick={() => setValue(clamp(value + step))}><MdAdd /></button>
+        <div className="input-group">
+            <div className="ig-top">
+                <div className="ig-label">{label}</div>
+                <div className="ig-controls">
+                    <button className="ig-btn" onClick={() => setValue(clamp(value - step))}>−</button>
+                    <div className="ig-sep"></div>
+                    {prefix && <span className="calc-prefix">{prefix}</span>}
+                    <input
+                        type="number"
+                        className="ig-input"
+                        value={value}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                    />
+                    <div className="ig-sep"></div>
+                    {suffix && <div className="ig-unit">{suffix}</div>}
+                    <button className="ig-btn" onClick={() => setValue(clamp(value + step))}>+</button>
                 </div>
             </div>
-            <input
-                type="range"
-                className="calc-range"
-                min={min}
-                max={max}
-                step={step}
-                value={value}
-                onChange={(e) => setValue(Number(e.target.value))}
-            />
-            <div className="calc-range-labels"><span>{minLabel}</span><span>{maxLabel}</span></div>
+            <div className="ig-range-wrap" style={{ '--pct': pct }}>
+                <input
+                    type="range"
+                    className="ig-range"
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={value}
+                    onChange={(e) => setValue(Number(e.target.value))}
+                />
+            </div>
+            <div className="ig-range-labels"><span className="ig-range-label">{minLabel}</span><span className="ig-range-label">{maxLabel}</span></div>
         </div>
     );
 }
@@ -74,53 +78,72 @@ function EMICalc({ type }) {
     const interest = total - amount;
 
     const pieData = [
-        { name: 'Principal Amount', value: amount, color: '#8B1A4A' },
-        { name: 'Interest Payable', value: Math.round(interest), color: '#D4D4D8' },
+        { name: 'Principal Amount', value: amount, color: isHome ? '#2D7A4F' : '#3B82F6' },
+        { name: 'Interest Payable', value: Math.round(interest), color: '#E4EDE8' },
     ];
 
     return (
-        <div className="calc-inline-grid">
-            <div className="calc-form-panel card">
+        <div className="calc-panel">
+            <div className="input-card">
+                <div className="input-card-title"><span className="input-card-icon">{isHome ? ICONS.Home : ICONS.Vehicle}</span> {isHome ? 'Home Loan EMI' : 'Car Loan EMI'}</div>
                 <SliderField label="Loan Amount" value={amount} setValue={setAmount}
-                    min={50000} max={isHome ? 50000000 : 5000000} step={50000}
-                    minLabel="₹50,000" maxLabel={isHome ? '₹5,00,00,000' : '₹50,00,000'} prefix="₹" />
-                <SliderField label="Interest Rate(p.a)" value={rate} setValue={setRate}
-                    min={1} max={30} step={0.1}
-                    minLabel="1%" maxLabel="30%" suffix="%" />
+                    min={50000} max={isHome ? 50000000 : 5000000} step={isHome ? 50000 : 10000}
+                    minLabel="₹50,000" maxLabel={isHome ? '₹5 Cr' : '₹50 L'} prefix="₹" />
+                <SliderField label="Interest Rate (p.a.)" value={rate} setValue={setRate}
+                    min={1} max={30} step={0.5}
+                    minLabel="1%" maxLabel="30%" suffix="% p.a." />
                 <SliderField label="Loan Term" value={tenure} setValue={setTenure}
                     min={1} max={isHome ? 30 : 7} step={1}
                     minLabel="1 Year" maxLabel={isHome ? '30 Years' : '7 Years'} suffix="Years" />
             </div>
-            <div className="calc-result-panel card">
-                <div className="calc-result-row highlight">
-                    <span>EMI Amount</span>
-                    <span className="val">₹ {Math.round(emi).toLocaleString('en-IN')}</span>
+            <div className="result-card">
+                <div className="result-hero">
+                    <div>
+                        <div className="result-hero-label">Monthly EMI</div>
+                        <div className="result-hero-value">₹{Math.round(emi).toLocaleString('en-IN')}</div>
+                        <div className="result-hero-badge">@ {rate}% p.a.</div>
+                    </div>
                 </div>
-                <div className="calc-donut-wrap">
+                <div className="result-stats">
+                    <div className="result-stat">
+                        <div className="result-stat-label">Principal Amount</div>
+                        <div className="result-stat-val">₹{amount.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div className="result-stat">
+                        <div className="result-stat-label">Total Interest</div>
+                        <div className="result-stat-val red">₹{Math.round(interest).toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+                <div className="donut-wrap">
                     <DonutChart
                         data={pieData}
-                        height={220}
-                        innerR={55}
-                        outerR={80}
+                        height={160}
+                        innerR={46}
+                        outerR={66}
                         colors={pieData.map(d => d.color)}
                         tooltipFmt={v => formatCurrency(v)}
                         hideLegend
                     />
+                    <div className="donut-center-label">
+                        <span className="donut-center-val">{Math.round((amount / total) * 100)}%</span>
+                        <span className="donut-center-sub">Principal</span>
+                    </div>
                 </div>
-                <div className="calc-legend">
+                <div className="result-legend">
                     {pieData.map(d => (
-                        <div key={d.name} className="calc-legend-item">
-                            <span className="calc-legend-dot" style={{ background: d.color }} />
-                            <span className="calc-legend-label">{d.name}</span>
-                            <span className="calc-legend-val">₹ {d.value.toLocaleString('en-IN')}</span>
+                        <div key={d.name} className="legend-row">
+                            <span className="legend-dot" style={{ background: d.color }} />
+                            <span className="legend-label">{d.name}</span>
+                            <span className="legend-val">₹{d.value.toLocaleString('en-IN')}</span>
                         </div>
                     ))}
                 </div>
-                <div className="calc-result-row total">
-                    <span>Total Amount Payable</span>
-                    <span className="val">₹ {Math.round(total).toLocaleString('en-IN')}</span>
+                <div className="result-divider"></div>
+                <div className="result-total-row">
+                    <span className="result-total-label">Total Amount Payable</span>
+                    <span className="result-total-val">₹{Math.round(total).toLocaleString('en-IN')}</span>
                 </div>
-                <p className="calc-disclaimer">*All the amounts are indicative</p>
+                <div className="result-note">*All amounts are indicative estimates</div>
             </div>
         </div>
     );
@@ -139,53 +162,74 @@ function SIPCalc() {
     const returns = fv - invested;
 
     const pieData = [
-        { name: 'Invested Amount', value: Math.round(invested), color: '#2563EB' },
-        { name: 'Est. Returns', value: Math.round(returns), color: '#16A34A' },
+        { name: 'Invested Amount', value: Math.round(invested), color: '#3B82F6' },
+        { name: 'Est. Returns', value: Math.round(returns), color: '#2D7A4F' },
     ];
 
     return (
-        <div className="calc-inline-grid">
-            <div className="calc-form-panel card">
+        <div className="calc-panel">
+            <div className="input-card">
+                <div className="input-card-title"><span className="input-card-icon">{ICONS.chartLine}</span> SIP Calculator</div>
                 <SliderField label="Monthly Investment" value={monthly} setValue={setMonthly}
                     min={500} max={200000} step={500}
-                    minLabel="₹500" maxLabel="₹2,00,000" prefix="₹" />
+                    minLabel="₹500" maxLabel="₹2 L" prefix="₹" />
                 <SliderField label="Expected Return Rate" value={rate} setValue={setRate}
                     min={1} max={30} step={0.5}
-                    minLabel="1%" maxLabel="30%" suffix="%" />
+                    minLabel="1%" maxLabel="30%" suffix="% p.a." />
                 <SliderField label="Investment Period" value={period} setValue={setPeriod}
                     min={1} max={40} step={1}
                     minLabel="1 Year" maxLabel="40 Years" suffix="Years" />
             </div>
-            <div className="calc-result-panel card">
-                <div className="calc-result-row highlight">
-                    <span>Total Value</span>
-                    <span className="val">₹ {Math.round(fv).toLocaleString('en-IN')}</span>
+            <div className="result-card">
+                <div className="result-hero">
+                    <div>
+                        <div className="result-hero-label">Total Value</div>
+                        <div className="result-hero-value">₹{Math.round(fv).toLocaleString('en-IN')}</div>
+                        <div className="result-hero-badge" style={{ background: 'var(--blue-light)', color: 'var(--blue)' }}>
+                            {((returns / invested) * 100).toFixed(1)}% returns
+                        </div>
+                    </div>
                 </div>
-                <div className="calc-donut-wrap">
+                <div className="result-stats">
+                    <div className="result-stat">
+                        <div className="result-stat-label">Amount Invested</div>
+                        <div className="result-stat-val blue">₹{Math.round(invested).toLocaleString('en-IN')}</div>
+                    </div>
+                    <div className="result-stat">
+                        <div className="result-stat-label">Est. Returns</div>
+                        <div className="result-stat-val green">₹{Math.round(returns).toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+                <div className="donut-wrap">
                     <DonutChart
                         data={pieData}
-                        height={220}
-                        innerR={55}
-                        outerR={80}
+                        height={160}
+                        innerR={46}
+                        outerR={66}
                         colors={pieData.map(d => d.color)}
                         tooltipFmt={v => formatCurrency(v)}
                         hideLegend
                     />
+                    <div className="donut-center-label">
+                        <span className="donut-center-val">{Math.round((returns / fv) * 100)}%</span>
+                        <span className="donut-center-sub">Returns</span>
+                    </div>
                 </div>
-                <div className="calc-legend">
+                <div className="result-legend">
                     {pieData.map(d => (
-                        <div key={d.name} className="calc-legend-item">
-                            <span className="calc-legend-dot" style={{ background: d.color }} />
-                            <span className="calc-legend-label">{d.name}</span>
-                            <span className="calc-legend-val">₹ {d.value.toLocaleString('en-IN')}</span>
+                        <div key={d.name} className="legend-row">
+                            <span className="legend-dot" style={{ background: d.color }} />
+                            <span className="legend-label">{d.name}</span>
+                            <span className="legend-val">₹{d.value.toLocaleString('en-IN')}</span>
                         </div>
                     ))}
                 </div>
-                <div className="calc-result-row total">
-                    <span>Return Percentage</span>
-                    <span className="val">{((returns / invested) * 100).toFixed(1)}%</span>
+                <div className="result-divider"></div>
+                <div className="result-total-row">
+                    <span className="result-total-label">Total Corpus Value</span>
+                    <span className="result-total-val">₹{Math.round(fv).toLocaleString('en-IN')}</span>
                 </div>
-                <p className="calc-disclaimer">*All the amounts are indicative</p>
+                <div className="result-note">*All amounts are indicative estimates</div>
             </div>
         </div>
     );
@@ -201,53 +245,74 @@ function LumpsumCalc() {
     const returns = fv - amount;
 
     const pieData = [
-        { name: 'Investment', value: amount, color: '#8B5CF6' },
-        { name: 'Returns', value: Math.round(returns), color: '#16A34A' },
+        { name: 'Investment', value: amount, color: '#7C3AED' },
+        { name: 'Returns', value: Math.round(returns), color: '#2D7A4F' },
     ];
 
     return (
-        <div className="calc-inline-grid">
-            <div className="calc-form-panel card">
+        <div className="calc-panel">
+            <div className="input-card">
+                <div className="input-card-title"><span className="input-card-icon">{ICONS.wallet}</span> Lumpsum Calculator</div>
                 <SliderField label="Investment Amount" value={amount} setValue={setAmount}
                     min={10000} max={10000000} step={10000}
-                    minLabel="₹10,000" maxLabel="₹1,00,00,000" prefix="₹" />
+                    minLabel="₹10,000" maxLabel="₹1 Cr" prefix="₹" />
                 <SliderField label="Expected Return Rate" value={rate} setValue={setRate}
                     min={1} max={30} step={0.5}
-                    minLabel="1%" maxLabel="30%" suffix="%" />
+                    minLabel="1%" maxLabel="30%" suffix="% p.a." />
                 <SliderField label="Investment Period" value={period} setValue={setPeriod}
                     min={1} max={40} step={1}
                     minLabel="1 Year" maxLabel="40 Years" suffix="Years" />
             </div>
-            <div className="calc-result-panel card">
-                <div className="calc-result-row highlight">
-                    <span>Total Value</span>
-                    <span className="val">₹ {Math.round(fv).toLocaleString('en-IN')}</span>
+            <div className="result-card">
+                <div className="result-hero">
+                    <div>
+                        <div className="result-hero-label">Total Value</div>
+                        <div className="result-hero-value">₹{Math.round(fv).toLocaleString('en-IN')}</div>
+                        <div className="result-hero-badge" style={{ background: 'var(--purple-light)', color: 'var(--purple)' }}>
+                            {((returns / amount) * 100).toFixed(1)}% growth
+                        </div>
+                    </div>
                 </div>
-                <div className="calc-donut-wrap">
+                <div className="result-stats">
+                    <div className="result-stat">
+                        <div className="result-stat-label">Investment</div>
+                        <div className="result-stat-val purple">₹{amount.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div className="result-stat">
+                        <div className="result-stat-label">Returns</div>
+                        <div className="result-stat-val green">₹{Math.round(returns).toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+                <div className="donut-wrap">
                     <DonutChart
                         data={pieData}
-                        height={220}
-                        innerR={55}
-                        outerR={80}
+                        height={160}
+                        innerR={46}
+                        outerR={66}
                         colors={pieData.map(d => d.color)}
                         tooltipFmt={v => formatCurrency(v)}
                         hideLegend
                     />
+                    <div className="donut-center-label">
+                        <span className="donut-center-val">{Math.round((returns / fv) * 100)}%</span>
+                        <span className="donut-center-sub">Returns</span>
+                    </div>
                 </div>
-                <div className="calc-legend">
+                <div className="result-legend">
                     {pieData.map(d => (
-                        <div key={d.name} className="calc-legend-item">
-                            <span className="calc-legend-dot" style={{ background: d.color }} />
-                            <span className="calc-legend-label">{d.name}</span>
-                            <span className="calc-legend-val">₹ {d.value.toLocaleString('en-IN')}</span>
+                        <div key={d.name} className="legend-row">
+                            <span className="legend-dot" style={{ background: d.color }} />
+                            <span className="legend-label">{d.name}</span>
+                            <span className="legend-val">₹{d.value.toLocaleString('en-IN')}</span>
                         </div>
                     ))}
                 </div>
-                <div className="calc-result-row total">
-                    <span>Growth</span>
-                    <span className="val">{((returns / amount) * 100).toFixed(1)}%</span>
+                <div className="result-divider"></div>
+                <div className="result-total-row">
+                    <span className="result-total-label">Total Corpus Value</span>
+                    <span className="result-total-val">₹{Math.round(fv).toLocaleString('en-IN')}</span>
                 </div>
-                <p className="calc-disclaimer">*All the amounts are indicative</p>
+                <div className="result-note">*All amounts are indicative estimates</div>
             </div>
         </div>
     );
@@ -265,56 +330,77 @@ function FVCalc() {
     const erosion = nominalFV - realFV;
 
     const pieData = [
-        { name: 'Real Value', value: Math.round(realFV), color: '#16A34A' },
+        { name: 'Real Value', value: Math.round(realFV), color: '#2D7A4F' },
         { name: 'Inflation Erosion', value: Math.round(erosion), color: '#EF4444' },
     ];
 
     return (
-        <div className="calc-inline-grid">
-            <div className="calc-form-panel card">
+        <div className="calc-panel">
+            <div className="input-card">
+                <div className="input-card-title"><span className="input-card-icon">{ICONS.trendUp}</span> Future Value Calculator</div>
                 <SliderField label="Current Value" value={currentVal} setValue={setCurrentVal}
                     min={10000} max={10000000} step={10000}
-                    minLabel="₹10,000" maxLabel="₹1,00,00,000" prefix="₹" />
+                    minLabel="₹10,000" maxLabel="₹1 Cr" prefix="₹" />
                 <SliderField label="Expected Return Rate" value={rate} setValue={setRate}
                     min={1} max={30} step={0.5}
-                    minLabel="1%" maxLabel="30%" suffix="%" />
+                    minLabel="1%" maxLabel="30%" suffix="% p.a." />
                 <SliderField label="Inflation Rate" value={inflation} setValue={setInflation}
                     min={1} max={15} step={0.5}
-                    minLabel="1%" maxLabel="15%" suffix="%" />
+                    minLabel="1%" maxLabel="15%" suffix="% p.a." />
                 <SliderField label="Time Period" value={period} setValue={setPeriod}
                     min={1} max={40} step={1}
                     minLabel="1 Year" maxLabel="40 Years" suffix="Years" />
             </div>
-            <div className="calc-result-panel card">
-                <div className="calc-result-row highlight">
-                    <span>Nominal Value</span>
-                    <span className="val">₹ {Math.round(nominalFV).toLocaleString('en-IN')}</span>
+            <div className="result-card">
+                <div className="result-hero">
+                    <div>
+                        <div className="result-hero-label">Nominal Future Value</div>
+                        <div className="result-hero-value">₹{Math.round(nominalFV).toLocaleString('en-IN')}</div>
+                        <div className="result-hero-badge" style={{ background: 'var(--teal-light)', color: 'var(--teal)' }}>
+                            {((nominalFV - currentVal) / currentVal * 100).toFixed(1)}% growth
+                        </div>
+                    </div>
                 </div>
-                <div className="calc-donut-wrap">
+                <div className="result-stats">
+                    <div className="result-stat">
+                        <div className="result-stat-label">Real Value</div>
+                        <div className="result-stat-val green">₹{Math.round(realFV).toLocaleString('en-IN')}</div>
+                    </div>
+                    <div className="result-stat">
+                        <div className="result-stat-label">Inflation Erosion</div>
+                        <div className="result-stat-val red">₹{Math.round(erosion).toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+                <div className="donut-wrap">
                     <DonutChart
                         data={pieData}
-                        height={220}
-                        innerR={55}
-                        outerR={80}
+                        height={160}
+                        innerR={46}
+                        outerR={66}
                         colors={pieData.map(d => d.color)}
                         tooltipFmt={v => formatCurrency(v)}
                         hideLegend
                     />
+                    <div className="donut-center-label">
+                        <span className="donut-center-val">{Math.round((realFV / nominalFV) * 100)}%</span>
+                        <span className="donut-center-sub">Real Value</span>
+                    </div>
                 </div>
-                <div className="calc-legend">
+                <div className="result-legend">
                     {pieData.map(d => (
-                        <div key={d.name} className="calc-legend-item">
-                            <span className="calc-legend-dot" style={{ background: d.color }} />
-                            <span className="calc-legend-label">{d.name}</span>
-                            <span className="calc-legend-val">₹ {d.value.toLocaleString('en-IN')}</span>
+                        <div key={d.name} className="legend-row">
+                            <span className="legend-dot" style={{ background: d.color }} />
+                            <span className="legend-label">{d.name}</span>
+                            <span className="legend-val">₹{d.value.toLocaleString('en-IN')}</span>
                         </div>
                     ))}
                 </div>
-                <div className="calc-result-row total">
-                    <span>Purchasing Power Erosion</span>
-                    <span className="val">{((erosion / nominalFV) * 100).toFixed(1)}%</span>
+                <div className="result-divider"></div>
+                <div className="result-total-row">
+                    <span className="result-total-label">Purchasing Power Erosion</span>
+                    <span className="result-total-val">{((erosion / nominalFV) * 100).toFixed(1)}%</span>
                 </div>
-                <p className="calc-disclaimer">*All the amounts are indicative</p>
+                <div className="result-note">*All amounts are indicative estimates</div>
             </div>
         </div>
     );
@@ -324,31 +410,34 @@ function FVCalc() {
 export default function CalculatorsPage() {
     const [activeCalc, setActiveCalc] = useState('home-loan');
 
-    const activeObj = calculators.find(c => c.key === activeCalc);
-
     return (
         <div className="calc-page">
-            <div className="page-header" style={{ textAlign: 'center' }}>
-                <h1>{activeObj.label}</h1>
-            </div>
+            <div className="calc-content">
+                <div className="calc-page-header">
+                    <div>
+                        <div className="calc-page-title">Calculators</div>
+                        <div className="calc-page-sub">Plan smarter with financial calculators — all results are indicative</div>
+                    </div>
+                </div>
 
-            <div className="calc-tabs-bar">
-                {calculators.map(c => (
-                    <button
-                        key={c.key}
-                        className={`calc-tab-btn ${activeCalc === c.key ? 'active' : ''}`}
-                        onClick={() => setActiveCalc(c.key)}
-                    >
-                        <c.icon className="calc-tab-icon" />
-                        {c.label}
-                    </button>
-                ))}
-            </div>
+                <div className="calc-tabs">
+                    {calculators.map(c => (
+                        <button
+                            key={c.key}
+                            className={`calc-tab ${activeCalc === c.key ? 'active' : ''}`}
+                            onClick={() => setActiveCalc(c.key)}
+                        >
+                            {c.icon}
+                            {c.label}
+                        </button>
+                    ))}
+                </div>
 
-            {(activeCalc === 'home-loan' || activeCalc === 'car-loan') && <EMICalc type={activeCalc} />}
-            {activeCalc === 'sip' && <SIPCalc />}
-            {activeCalc === 'lumpsum' && <LumpsumCalc />}
-            {activeCalc === 'future-value' && <FVCalc />}
+                {(activeCalc === 'home-loan' || activeCalc === 'car-loan') && <EMICalc type={activeCalc} />}
+                {activeCalc === 'sip' && <SIPCalc />}
+                {activeCalc === 'lumpsum' && <LumpsumCalc />}
+                {activeCalc === 'future-value' && <FVCalc />}
+            </div>
         </div>
     );
 }
