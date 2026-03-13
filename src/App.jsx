@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import PortfolioPage from './pages/Portfolio/PortfolioPage';
+import MyAssetsPage from './pages/MyAssets/MyAssetsPage';
+import AssetDetailPage from './pages/AssetDetail/AssetDetailPage';
 import GoalsPage from './pages/Goals/GoalsPage';
 import ScenarioAnalysisPage from './pages/ScenarioAnalysis/ScenarioAnalysisPage';
 import CalculatorsPage from './pages/Calculators/CalculatorsPage';
@@ -17,6 +19,8 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/my-assets" element={<MyAssetsPage />} />
+          <Route path="/asset/:id" element={<AssetDetailPage />} />
           <Route path="/goals" element={<GoalsPage />} />
           <Route path="/scenario-analysis" element={<ScenarioAnalysisPage />} />
           <Route path="/calculators" element={<CalculatorsPage />} />

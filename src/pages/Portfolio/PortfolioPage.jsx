@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { assets, liabilities, netWorthData, assetAllocation, liabilityAllocation, formatCurrency } from '../../data/mockData';
 import { ICONS } from '../../utils/icons';
@@ -10,7 +11,7 @@ function formatNumber(num) {
 }
 import DonutChart from '../../components/Charts/DonutChart';
 import Modal from '../../components/common/Modal';
-import { MdAccountBalance, MdDriveEta, MdBusiness, MdHome, MdAttachMoney, MdShowChart, MdOutlineCategory, MdPerson, MdCalendarToday, MdOutlineEventNote } from 'react-icons/md';
+import { MdAccountBalance, MdDriveEta, MdBusiness, MdHome, MdAttachMoney, MdShowChart, MdOutlineCategory, MdPerson, MdCalendarToday, MdOutlineEventNote, MdClose } from 'react-icons/md';
 import './PortfolioPage.css';
 
 const categoryColors = {
@@ -56,6 +57,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function PortfolioPage() {
+    const navigate = useNavigate();
     const [timeFilter, setTimeFilter] = useState('6M');
 
     // Local data state (initialized from mock data)
@@ -73,6 +75,7 @@ export default function PortfolioPage() {
     // Modals state
     const [isAssetModalOpen, setIsAssetModalOpen] = useState(false);
     const [isLiabilityModalOpen, setIsLiabilityModalOpen] = useState(false);
+    const [selectedAsset, setSelectedAsset] = useState(null);
 
     // Form submit handlers
     const handleAddAsset = (e) => {
@@ -126,6 +129,25 @@ export default function PortfolioPage() {
         return matchSearch && matchCategory;
     });
 
+    const isAssetDetailType = (asset) => {
+        const type = `${asset.type || ''}`.toLowerCase();
+        const subType = `${asset.subType || ''}`.toLowerCase();
+        const isInvestments = asset.category === 'investments';
+        return (
+            type === 'stock' ||
+            type === 'mutual_fund' ||
+            (isInvestments && (subType.includes('stock') || subType.includes('mutual')))
+        );
+    };
+
+    const handleAssetRowClick = (asset) => {
+        if (isAssetDetailType(asset)) {
+            navigate(`/asset/${asset.id}`, { state: { asset } });
+            return;
+        }
+        setSelectedAsset(asset);
+    };
+
     return (
         <div className="portfolio-page">
             {/* Portfolio Header & Cards */}
@@ -134,6 +156,7 @@ export default function PortfolioPage() {
                     <div className="portfolio-titles">
                         <h2>Portfolio Overview</h2>
                         <p>Track all your assets, liabilities and net worth in one place</p>
+                        <br />
                     </div>
                     <div className="portfolio-actions">
                         <button className="btn-secondary" onClick={() => setIsLiabilityModalOpen(true)}>
@@ -247,11 +270,11 @@ export default function PortfolioPage() {
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 11, dy: 10, fontWeight: 500 }} />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#000', fontSize: 11, dy: 10, fontWeight: 500 }} />
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: '#9CA3AF', fontSize: 11, fontWeight: 500 }}
+                                tick={{ fill: '#000', fontSize: 11, fontWeight: 500 }}
                                 tickFormatter={(val) => val >= 100000 ? `₹${(val / 100000).toFixed(0)}L` : `₹${(val / 1000).toFixed(0)}K`}
                                 width={50}
                             />
@@ -292,7 +315,7 @@ export default function PortfolioPage() {
                         </div>
                         <div className="liab-table-controls">
                             <div className="liab-search-wrap">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                                 <input type="text" placeholder="Search assets..." value={search} onChange={(e) => setSearch(e.target.value)} />
                             </div>
                             <select className="liab-filter-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
@@ -303,7 +326,7 @@ export default function PortfolioPage() {
                                 <option value="crypto">Crypto</option>
                                 <option value="vehicles">Vehicles</option>
                             </select>
-                            <button className="btn-primary" onClick={() => setIsAssetModalOpen(true)}>+ Add</button>
+                            <button className="btn-primary" onClick={() => navigate('/my-assets')}>View More</button>
                         </div>
                     </div>
 
@@ -324,7 +347,11 @@ export default function PortfolioPage() {
                                     const gain = asset.currentValue - asset.purchasePrice;
                                     const gainPct = ((gain / asset.purchasePrice) * 100).toFixed(1);
                                     return (
-                                        <tr key={asset.id}>
+                                        <tr
+                                            key={asset.id}
+                                            className="portfolio-asset-row"
+                                            onClick={() => handleAssetRowClick(asset)}
+                                        >
                                             <td>
                                                 <div className="liab-name-cell">
                                                     <div className="liab-dot" style={{ background: categoryColors[asset.category] }} />
@@ -354,6 +381,40 @@ export default function PortfolioPage() {
                 </div>
             </div>
 
+            {selectedAsset && (
+                <div className="portfolio-asset-drawer-overlay" onClick={() => setSelectedAsset(null)}>
+                    <aside className="portfolio-asset-drawer" onClick={(e) => e.stopPropagation()}>
+                        <div className="portfolio-asset-drawer-header">
+                            <div>
+                                <h3>{selectedAsset.name}</h3>
+                                <p>{selectedAsset.subType || selectedAsset.category?.replace('_', ' ')}</p>
+                            </div>
+                            <button type="button" aria-label="Close drawer" onClick={() => setSelectedAsset(null)}>
+                                <MdClose />
+                            </button>
+                        </div>
+
+                        <div className="portfolio-asset-drawer-card">
+                            <span>Current Value</span>
+                            <strong>{formatCurrency(selectedAsset.currentValue)}</strong>
+                            <small>
+                                {selectedAsset.currentValue >= selectedAsset.purchasePrice ? '+' : '-'}
+                                {Math.abs(((selectedAsset.currentValue - selectedAsset.purchasePrice) / (selectedAsset.purchasePrice || 1)) * 100).toFixed(1)}% return
+                            </small>
+                        </div>
+
+                        <div className="portfolio-asset-drawer-grid">
+                            <div className="portfolio-asset-drawer-item"><span>Purchase Price</span><strong>{formatCurrency(selectedAsset.purchasePrice)}</strong></div>
+                            <div className="portfolio-asset-drawer-item"><span>Gain / Loss</span><strong>{formatCurrency(selectedAsset.currentValue - selectedAsset.purchasePrice)}</strong></div>
+                            <div className="portfolio-asset-drawer-item"><span>Category</span><strong>{selectedAsset.category?.replace('_', ' ')}</strong></div>
+                            <div className="portfolio-asset-drawer-item"><span>Sub Type</span><strong>{selectedAsset.subType || selectedAsset.category?.replace('_', ' ')}</strong></div>
+                            <div className="portfolio-asset-drawer-item"><span>Purchase Date</span><strong>{selectedAsset.purchaseDate || 'N/A'}</strong></div>
+                            <div className="portfolio-asset-drawer-item"><span>Liquid Asset</span><strong>{selectedAsset.isLiquid ? 'Yes' : 'No'}</strong></div>
+                        </div>
+                    </aside>
+                </div>
+            )}
+
             {/* Liabilities */}
             <div className="portfolio-section">
                 <div className="portfolio-grid">
@@ -366,7 +427,7 @@ export default function PortfolioPage() {
                             </div>
                             <div className="liab-table-controls">
                                 <div className="liab-search-wrap">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                                     <input type="text" placeholder="Search liabilities..." value={liabilitySearch} onChange={(e) => setLiabilitySearch(e.target.value)} />
                                 </div>
                                 <select className="liab-filter-select" value={liabilityCategoryFilter} onChange={(e) => setLiabilityCategoryFilter(e.target.value)}>
@@ -426,7 +487,7 @@ export default function PortfolioPage() {
 
                     <div className="allocation-card card">
                         <h4>Liability Allocation</h4>
-                        <br/>
+                        <br />
                         <DonutChart
                             data={liabilityAllocation}
                             height={260}

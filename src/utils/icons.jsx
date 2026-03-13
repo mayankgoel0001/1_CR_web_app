@@ -261,21 +261,21 @@ const clipboard = (
 const rankGold = (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="10" fill="#FDE68A" stroke="#F59E0B" strokeWidth="1.5" />
-        <text x="12" y="16" textAnchor="middle" fontSize="11" fontWeight="700" fill="#92400E" fontFamily="DM Sans, sans-serif">1</text>
+        <text x="12" y="16" textAnchor="middle" fontSize="11" fontWeight="700" fill="#92400E" fontFamily="Inter, sans-serif">1</text>
     </svg>
 );
 
 const rankSilver = (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="10" fill="#E5E7EB" stroke="#9CA3AF" strokeWidth="1.5" />
-        <text x="12" y="16" textAnchor="middle" fontSize="11" fontWeight="700" fill="#4B5563" fontFamily="DM Sans, sans-serif">2</text>
+        <text x="12" y="16" textAnchor="middle" fontSize="11" fontWeight="700" fill="#4B5563" fontFamily="Inter, sans-serif">2</text>
     </svg>
 );
 
 const rankBronze = (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="10" fill="#FED7AA" stroke="#F97316" strokeWidth="1.5" />
-        <text x="12" y="16" textAnchor="middle" fontSize="11" fontWeight="700" fill="#9A3412" fontFamily="DM Sans, sans-serif">3</text>
+        <text x="12" y="16" textAnchor="middle" fontSize="11" fontWeight="700" fill="#9A3412" fontFamily="Inter, sans-serif">3</text>
     </svg>
 );
 

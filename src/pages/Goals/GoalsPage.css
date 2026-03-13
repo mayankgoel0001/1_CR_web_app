@@ -1,5 +1,7 @@
 /* ── Page Shell ───────────────────────────────────────────────────────────── */
 .goals-page {
+    --color-text-secondary: #000;
+    --color-text-muted: #000;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -59,8 +61,8 @@
 }
 
 .gp-metric.dark {
-    background: #0F2B1E;
-    border-color: rgba(45, 122, 79, 0.3);
+    background: linear-gradient(135deg, rgba(45, 122, 79, 0.12), rgba(45, 122, 79, 0.05));
+    border-color: rgba(45, 122, 79, 0.24);
 }
 
 .gp-mc-top {
@@ -78,7 +80,7 @@
     letter-spacing: 0.4px;
 }
 
-.gp-mc-label.light { color: rgba(255,255,255,0.5); }
+.gp-mc-label.light { color: #000; }
 
 .gp-mc-icon {
     width: 28px;
@@ -120,6 +122,9 @@
 }
 
 .gp-mc-badge.glow    { background: rgba(52,211,153,0.15); color: #34D399; }
+.gp-metric.dark .gp-mc-icon.glow-icon { background: rgba(45, 122, 79, 0.16); color: #2D7A4F; }
+.gp-metric.dark .gp-mc-value.accent { color: #2D7A4F; }
+.gp-metric.dark .gp-mc-badge.glow { background: rgba(45, 122, 79, 0.12); color: #2D7A4F; border: 1px solid rgba(45, 122, 79, 0.24); }
 .gp-mc-badge.green-bg  { background: rgba(45,122,79,0.12); color: #2D7A4F; }
 .gp-mc-badge.teal-bg   { background: rgba(13,148,136,0.12); color: #0D9488; }
 .gp-mc-badge.orange-bg { background: rgba(245,158,11,0.12); color: #D97706; }
@@ -169,7 +174,7 @@
     background: transparent;
     cursor: pointer;
     margin-bottom: 4px;
-    transition: background 0.15s;
+    transition: all 0.15s;
 }
 
 .gp-filter-btn:hover {
@@ -178,19 +183,20 @@
 }
 
 .gp-filter-btn.active {
-    background: #1B4332;
-    border-color: rgba(45,122,79,0.5);
+    background: linear-gradient(135deg, rgba(45, 122, 79, 0.94), rgba(45, 122, 79, 0.82));
+    border-color: transparent;
+    box-shadow: inset 3px 0 0 #1f5a3a;
 }
 
 .gp-filter-btn.active .gp-fb-label {
-    color: #34D399;
+    color: #fff;
     font-weight: 700;
 }
 
 .gp-filter-btn.active .gp-fb-count {
-    background: rgba(52,211,153,0.15);
-    color: #34D399;
-    border-color: rgba(52,211,153,0.3);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 .gp-fb-left {
@@ -224,8 +230,8 @@
 
 /* Dark Progress Card */
 .gp-progress-card {
-    background: #0F2B1E;
-    border: 1px solid rgba(45,122,79,0.3);
+    background: linear-gradient(135deg, rgba(45, 122, 79, 0.12), rgba(45, 122, 79, 0.05));
+    border: 1px solid rgba(45, 122, 79, 0.24);
     border-radius: var(--radius-lg);
     padding: 18px 16px;
 }
@@ -233,7 +239,7 @@
 .gp-pc-label {
     font-size: 0.72rem;
     font-weight: 700;
-    color: rgba(255,255,255,0.4);
+    color: #000;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 4px;
@@ -241,14 +247,14 @@
 
 .gp-pc-title {
     font-size: 0.82rem;
-    color: rgba(255,255,255,0.55);
+    color: #000;
     margin-bottom: 14px;
     line-height: 1.4;
 }
 
 .gp-pc-saved {
     font-weight: 800;
-    color: #34D399;
+    color: #2D7A4F;
     font-size: 1rem;
 }
 
@@ -280,16 +286,16 @@
 .gp-pc-stat-name {
     flex: 1;
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.55);
+    color: #000;
 }
 
 .gp-pc-stat-val {
     font-size: 0.75rem;
     font-weight: 700;
-    color: rgba(255,255,255,0.8);
+    color: #000;
 }
 
-.gp-pc-stat-val.muted { color: rgba(255,255,255,0.3); }
+.gp-pc-stat-val.muted { color: #000; }
 
 /* ── MIDDLE PANEL ───────────────────────────────────────────────────────── */
 .gp-middle {
@@ -421,7 +427,7 @@
 
 .gi-cat {
     font-size: 0.78rem;
-    color: #6B7280;
+    color: #000;
     margin-top: 1px;
 }
 
@@ -459,12 +465,12 @@
 
 .gi-sep {
     font-size: 0.85rem;
-    color: #9CA3AF;
+    color: #000;
 }
 
 .gi-target {
     font-size: 0.88rem;
-    color: #6B7280;
+    color: #000;
     flex: 1;
 }
 
@@ -512,7 +518,7 @@
 
 .gi-meta-lbl {
     font-size: 9.5px;
-    color: #8FA99C !important;
+    color: #000 !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
@@ -521,7 +527,7 @@
 .gi-meta-val {
     font-size: 12px;
     font-weight: 600;
-    color: #374151 !important;
+    color: #000 !important;
     margin-top: 1px;
 }
 
@@ -583,7 +589,7 @@
 
 .gp-sip-sub {
     font-size: 0.75rem;
-    color: #6B7280;
+    color: #000;
     margin-top: 2px;
     margin-bottom: 12px;
 }
@@ -601,7 +607,7 @@
 .gp-sip-total-lbl {
     font-size: 0.78rem;
     font-weight: 600;
-    color: #374151;
+    color: #000;
 }
 
 .gp-sip-total-val {
@@ -689,7 +695,7 @@
 
 .gp-sip-amt-lbl {
     font-size: 0.72rem;
-    color: #6B7280;
+    color: #000;
     font-weight: 500;
 }
 

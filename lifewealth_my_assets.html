@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LifeWealth — My Assets</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:        #2C7C5A;
+  --green-mid:    #3a9460;
+  --green-light:  #E6F4ED;
+  --green-muted:  #BAE0CE;
+  --accent:       #10B880;
+  --sidebar-bg:   #0C2C20;
+  --page-bg:      #F0F4F1;
+  --card-bg:      #FFFFFF;
+  --border:       #E2EDE7;
+  --text-1:       #0D1F17;
+  --text-2:       #4B6358;
+  --text-3:       #8FA99C;
+  --red:          #EF4444;
+  --red-light:    #FEF2F2;
+  --orange:       #F59E0B;
+  --orange-light: #FFFBEB;
+  --blue:         #3B82F6;
+  --blue-light:   #EFF6FF;
+  --shadow-sm:    0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:    0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --radius:       14px;
+}
+
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--page-bg); color: var(--text-1); }
+
+/* ── LAYOUT ── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 230px; min-width: 230px;
+  background: var(--sidebar-bg);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 10;
+}
+.sidebar-logo { padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 36px; height: 36px; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.logo-name { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+.logo-tag { font-size: 10px; font-weight: 600; color: var(--accent); background: rgba(16,184,128,0.12); border-radius: 4px; padding: 1px 5px; letter-spacing: 0.5px; width: fit-content; margin-top: 2px; }
+.sidebar-nav { flex: 1; padding: 12px 0; }
+.nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.28); letter-spacing: 1px; text-transform: uppercase; padding: 10px 18px 4px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 18px; margin: 1px 8px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.52); font-size: 13.5px; font-weight: 500; text-decoration: none; transition: all 0.15s; }
+.nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.82); }
+.nav-item.active { background: linear-gradient(135deg, rgba(44,124,90,0.35), rgba(16,184,128,0.12)); color: #fff; box-shadow: inset 3px 0 0 var(--accent); }
+.nav-item.active svg { color: var(--accent); }
+.nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+.sidebar-bottom { padding: 14px 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+.upgrade-card { background: linear-gradient(135deg, rgba(44,124,90,0.3), rgba(16,184,128,0.15)); border: 1px solid rgba(16,184,128,0.2); border-radius: 10px; padding: 14px; }
+.upgrade-label { font-size: 10px; color: var(--accent); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 3px; }
+.upgrade-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.upgrade-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 7px; padding: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── TOPBAR ── */
+.topbar { height: 58px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 16px; flex-shrink: 0; }
+.topbar-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+.back-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--page-bg); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-2); transition: all 0.15s; }
+.back-btn:hover { background: var(--green-light); color: var(--green); border-color: var(--green-muted); }
+.topbar-title { font-size: 17px; font-weight: 700; color: var(--text-1); }
+.topbar-breadcrumb { font-size: 13px; color: var(--text-3); display: flex; align-items: center; gap: 4px; }
+.topbar-breadcrumb span { color: var(--green); font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--page-bg); border: 1px solid var(--border); cursor: pointer; color: var(--text-2); transition: all 0.15s; }
+.topbar-icon:hover { background: var(--green-light); color: var(--green); }
+.user-chip { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; background: var(--page-bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+.user-avatar { width: 28px; height: 28px; background: var(--green); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+.user-name { font-size: 12px; font-weight: 600; color: var(--text-1); }
+.user-plan { font-size: 10px; color: var(--green); font-weight: 500; }
+
+/* ── CONTENT ── */
+.content { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+/* ── SUMMARY STRIP ── */
+.summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.stat-card {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 18px 20px; position: relative; overflow: hidden;
+}
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; }
+.stat-card.green::before  { background: linear-gradient(90deg, #2C7C5A, #10B880); }
+.stat-card.blue::before   { background: linear-gradient(90deg, #2563EB, #60A5FA); }
+.stat-card.orange::before { background: linear-gradient(90deg, #D97706, #FCD34D); }
+.stat-card.red::before    { background: linear-gradient(90deg, #EF4444, #FCA5A5); }
+.stat-label { font-size: 10.5px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 800; color: var(--text-1); letter-spacing: -0.5px; line-height: 1; }
+.stat-value.green  { color: var(--green); }
+.stat-value.red    { color: var(--red); }
+.stat-sub { font-size: 11.5px; color: var(--text-3); margin-top: 5px; display: flex; align-items: center; gap: 4px; }
+.stat-sub .pos { color: var(--green); font-weight: 600; }
+.stat-sub .neg { color: var(--red); font-weight: 600; }
+.stat-icon { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.stat-card.green .stat-icon { background: var(--green-light); color: var(--green); }
+.stat-card.blue  .stat-icon { background: var(--blue-light);  color: var(--blue);  }
+.stat-card.orange .stat-icon { background: var(--orange-light); color: var(--orange); }
+.stat-card.red   .stat-icon { background: var(--red-light);   color: var(--red);   }
+
+/* ── MAIN PANEL ── */
+.main-panel { display: grid; grid-template-columns: 1fr 280px; gap: 18px; }
+
+/* ── ASSETS TABLE CARD ── */
+.table-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+
+.table-toolbar {
+  padding: 18px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.toolbar-left { flex: 1; display: flex; align-items: center; gap: 10px; }
+.search-wrap { display: flex; align-items: center; gap: 8px; background: var(--page-bg); border: 1px solid var(--border); border-radius: 9px; padding: 7px 13px; min-width: 220px; transition: border-color 0.15s; }
+.search-wrap:focus-within { border-color: var(--green); background: #fff; }
+.search-wrap input { border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-1); outline: none; width: 100%; }
+.search-wrap input::placeholder { color: var(--text-3); }
+.filter-select { display: flex; align-items: center; gap: 6px; background: var(--page-bg); border: 1px solid var(--border); border-radius: 9px; padding: 7px 12px; font-size: 13px; color: var(--text-2); cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.15s; white-space: nowrap; }
+.filter-select:hover { border-color: var(--green-muted); background: var(--green-light); }
+.filter-select svg { width: 14px; height: 14px; }
+.filter-select.active { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight: 600; }
+
+.sort-btn { display: flex; align-items: center; gap: 5px; padding: 7px 12px; background: var(--page-bg); border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; color: var(--text-2); cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; white-space: nowrap; transition: all 0.15s; }
+.sort-btn:hover { border-color: var(--green-muted); }
+
+.add-btn { display: flex; align-items: center; gap: 6px; background: var(--green); color: #fff; border: none; border-radius: 9px; padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s; white-space: nowrap; }
+.add-btn:hover { background: var(--green-mid); }
+
+/* Category filter pills */
+.cat-pills { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; overflow-x: auto; }
+.cat-pills::-webkit-scrollbar { display: none; }
+.cat-pill { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); font-size: 12px; font-weight: 500; color: var(--text-2); cursor: pointer; white-space: nowrap; background: var(--page-bg); transition: all 0.15s; }
+.cat-pill:hover { border-color: var(--green-muted); background: var(--green-light); }
+.cat-pill.active { background: var(--green); color: #fff; border-color: var(--green); font-weight: 600; }
+.cat-pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Table */
+.asset-table { width: 100%; border-collapse: collapse; }
+.asset-table thead tr { border-bottom: 1px solid var(--border); }
+.asset-table th { padding: 11px 16px; font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.7px; text-align: left; background: #FAFCFB; white-space: nowrap; }
+.asset-table th.right { text-align: right; }
+.asset-table th.center { text-align: center; }
+.asset-table th .sort-icon { display: inline-flex; align-items: center; gap: 3px; cursor: pointer; }
+.asset-table th .sort-icon:hover { color: var(--green); }
+
+.asset-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; cursor: pointer; }
+.asset-table tbody tr:last-child { border-bottom: none; }
+.asset-table tbody tr:hover { background: #FAFCFB; }
+.asset-table tbody tr.selected { background: var(--green-light); }
+
+.asset-table td { padding: 14px 16px; vertical-align: middle; }
+.asset-table td.right { text-align: right; }
+.asset-table td.center { text-align: center; }
+
+/* Asset name cell */
+.asset-name-cell { display: flex; align-items: center; gap: 11px; }
+.asset-icon-wrap { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.asset-name-info { min-width: 0; }
+.asset-name { font-size: 13.5px; font-weight: 700; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.asset-subtype { font-size: 11.5px; color: var(--text-3); margin-top: 1px; }
+.liquid-badge { display: inline-flex; align-items: center; gap: 3px; background: #E6F4ED; color: var(--green); font-size: 9.5px; font-weight: 700; border-radius: 4px; padding: 1px 5px; margin-left: 5px; vertical-align: middle; }
+
+/* Category badge */
+.cat-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.cat-badge.savings     { background: #E6F4ED; color: #1A5C3A; }
+.cat-badge.investments { background: #EFF6FF; color: #1D4ED8; }
+.cat-badge.real-estate { background: #FEF3C7; color: #92400E; }
+.cat-badge.insurance   { background: #F5F3FF; color: #6D28D9; }
+.cat-badge.vehicle     { background: #FEE2E2; color: #991B1B; }
+.cat-badge.retirement  { background: #ECFDF5; color: #065F46; }
+.cat-badge.gold        { background: #FFFBEB; color: #B45309; }
+
+/* Value cells */
+.val-primary { font-size: 13.5px; font-weight: 700; color: var(--text-1); }
+.val-secondary { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+/* Gain/loss badge */
+.gain-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.gain-badge.pos { background: var(--green-light); color: var(--green); }
+.gain-badge.neg { background: var(--red-light);   color: var(--red); }
+.gain-badge.neu { background: #F3F4F6;             color: var(--text-3); }
+
+/* Mini return bar */
+.return-bar-wrap { height: 3px; background: #E5EDE8; border-radius: 99px; overflow: hidden; margin-top: 5px; width: 80px; margin-left: auto; }
+.return-bar { height: 100%; border-radius: 99px; }
+.return-bar.pos { background: linear-gradient(90deg, #2C7C5A, #10B880); }
+.return-bar.neg { background: linear-gradient(90deg, #EF4444, #FCA5A5); }
+.return-bar.neu { background: #D1D5DB; }
+
+/* Row actions */
+.row-actions { display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+.asset-table tbody tr:hover .row-actions { opacity: 1; }
+.row-action-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-3); transition: all 0.15s; }
+.row-action-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-light); }
+.row-action-btn.danger:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+
+/* Table footer */
+.table-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: #FAFCFB; border-radius: 0 0 var(--radius) var(--radius); }
+.footer-info { font-size: 12px; color: var(--text-3); }
+.footer-info strong { color: var(--text-2); }
+.pagination { display: flex; align-items: center; gap: 6px; }
+.page-btn { width: 32px; height: 32px; border-radius: 7px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--text-2); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.page-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-light); }
+.page-btn.active { background: var(--green); color: #fff; border-color: var(--green); }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── RIGHT PANEL ── */
+.right-panel { display: flex; flex-direction: column; gap: 16px; }
+
+/* Allocation donut card */
+.alloc-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; }
+.panel-title { font-size: 13.5px; font-weight: 700; color: var(--text-1); margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.panel-title-link { font-size: 11.5px; font-weight: 600; color: var(--green); cursor: pointer; }
+
+/* Donut chart */
+.donut-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 16px; }
+.donut-wrap svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-total { font-size: 18px; font-weight: 800; color: var(--text-1); line-height: 1; }
+.donut-label { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+.alloc-legend { display: flex; flex-direction: column; gap: 9px; }
+.alloc-row { display: flex; align-items: center; gap: 8px; }
+.alloc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.alloc-name { font-size: 12px; color: var(--text-2); flex: 1; }
+.alloc-val  { font-size: 12px; font-weight: 700; color: var(--text-1); }
+.alloc-pct  { font-size: 11px; color: var(--text-3); width: 36px; text-align: right; }
+
+/* Performance card */
+.perf-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; }
+.perf-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.perf-row:last-child { border-bottom: none; padding-bottom: 0; }
+.perf-row:first-of-type { padding-top: 0; }
+.perf-metric { font-size: 12px; color: var(--text-2); }
+.perf-val { font-size: 13px; font-weight: 700; color: var(--text-1); }
+.perf-val.green { color: var(--green); }
+.perf-val.red   { color: var(--red); }
+.perf-val.orange{ color: var(--orange); }
+
+/* Insight card */
+.insight-card { background: linear-gradient(135deg, #0C2C20, #1a3a28); border-radius: var(--radius); padding: 18px; }
+.insight-tag { font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
+.insight-text { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.5; margin-bottom: 12px; }
+.insight-text strong { color: #fff; }
+.insight-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 8px; padding: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+/* ── EMPTY STATE ── */
+.empty-state { padding: 60px 20px; text-align: center; }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-title { font-size: 15px; font-weight: 700; color: var(--text-1); margin-bottom: 6px; }
+.empty-desc { font-size: 13px; color: var(--text-3); }
+
+/* ── DETAIL SLIDE PANEL ── */
+.detail-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 400px; background: #fff;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+  z-index: 100; display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.detail-panel.open { transform: translateX(0); }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.2); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.overlay.show { opacity: 1; pointer-events: all; }
+
+.detail-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.detail-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--page-bg); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-2); margin-left: auto; }
+.detail-asset-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.detail-asset-name { font-size: 15px; font-weight: 700; color: var(--text-1); }
+.detail-asset-type { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+.detail-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+
+.detail-hero { background: linear-gradient(135deg, #0C2C20, #1a3a28); border-radius: 12px; padding: 18px; }
+.detail-hero-label { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.detail-hero-val { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.detail-hero-gain { display: inline-flex; align-items: center; gap: 4px; background: rgba(16,184,128,0.15); border: 1px solid rgba(16,184,128,0.25); color: var(--accent); font-size: 12px; font-weight: 600; border-radius: 6px; padding: 3px 8px; margin-top: 6px; }
+.detail-hero-gain.neg { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.25); color: #FCA5A5; }
+
+.detail-section-title { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 10px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.detail-field { background: var(--page-bg); border-radius: 9px; padding: 12px; }
+.detail-field-label { font-size: 10.5px; color: var(--text-3); margin-bottom: 3px; }
+.detail-field-val { font-size: 13.5px; font-weight: 700; color: var(--text-1); }
+
+.detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 20px; border-top: 1px solid var(--border); }
+.detail-action-btn { padding: 10px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; text-align: center; border: none; transition: all 0.15s; }
+.detail-action-btn.primary { background: var(--green); color: #fff; }
+.detail-action-btn.primary:hover { background: var(--green-mid); }
+.detail-action-btn.secondary { background: var(--page-bg); color: var(--text-2); border: 1px solid var(--border); }
+.detail-action-btn.secondary:hover { background: var(--green-light); color: var(--green); border-color: var(--green-muted); }
+.detail-action-btn.danger { background: var(--red-light); color: var(--red); border: 1px solid #FECACA; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.summary-strip { animation: fadeUp 0.4s ease both 0.05s; }
+.main-panel     { animation: fadeUp 0.4s ease both 0.15s; }
+
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 17l9 5 9-5"/><path d="M3 12l9 5 9-5"/></svg>
+      </div>
+      <div><div class="logo-name">LifeWealth</div><div class="logo-tag">1CRCLUB</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Overview</div>
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <div class="nav-label">Portfolio</div>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Net Worth</a>
+      <a class="nav-item active" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        My Assets
+      </a>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>My Debts</a>
+      <div class="nav-label">Planning</div>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>Goals</a>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Insurance</a>
+      <div class="nav-label">Tools</div>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>Calculators</a>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Scenarios</a>
+      <div class="nav-label">Account</div>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
+      <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="upgrade-card">
+        <div class="upgrade-label">Upgrade to</div>
+        <div class="upgrade-title">LifeWealth PRO</div>
+        <button class="upgrade-btn">Get Unlimited Access</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="back-btn" onclick="history.back()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <div>
+          <div class="topbar-title">My Assets</div>
+          <div class="topbar-breadcrumb">Portfolio <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> <span>My Assets</span></div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-icon" title="Export">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="topbar-icon" title="Notifications">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="user-chip">
+          <div class="user-avatar">MG</div>
+          <div><div class="user-name">Mayank G.</div><div class="user-plan">PREMIUM</div></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- SUMMARY STRIP -->
+      <div class="summary-strip">
+        <div class="stat-card green">
+          <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+          <div class="stat-label">Total Portfolio Value</div>
+          <div class="stat-value green">₹8,19,000</div>
+          <div class="stat-sub">8 assets tracked</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg></div>
+          <div class="stat-label">Total Invested</div>
+          <div class="stat-value">₹7,18,000</div>
+          <div class="stat-sub"><span class="pos">▲ +14.1% overall return</span></div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="stat-label">Total Gain / Loss</div>
+          <div class="stat-value" style="color:var(--green)">+₹1,01,000</div>
+          <div class="stat-sub"><span class="pos">▲ Profitable portfolio</span></div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="stat-label">Liquid Assets</div>
+          <div class="stat-value">₹1,85,000</div>
+          <div class="stat-sub">22.6% of portfolio</div>
+        </div>
+      </div>
+
+      <!-- MAIN PANEL -->
+      <div class="main-panel">
+
+        <!-- ASSETS TABLE -->
+        <div class="table-card">
+
+          <!-- Toolbar -->
+          <div class="table-toolbar">
+            <div class="toolbar-left">
+              <div class="search-wrap">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="Search assets..." id="searchInput" oninput="filterAssets()"/>
+              </div>
+              <div class="filter-select" id="catFilter" onclick="toggleCatDropdown()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                All Categories
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="sort-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                Sort by Value
+              </div>
+            </div>
+            <button class="add-btn" onclick="alert('Opens Add Asset modal')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Asset
+            </button>
+          </div>
+
+          <!-- Category filter pills -->
+          <div class="cat-pills">
+            <div class="cat-pill active" onclick="setCat('all', this)"><div class="cat-pill-dot" style="background:var(--green)"></div>All Assets <strong style="margin-left:2px;font-size:11px">(8)</strong></div>
+            <div class="cat-pill" onclick="setCat('savings', this)"><div class="cat-pill-dot" style="background:#2C7C5A"></div>Savings</div>
+            <div class="cat-pill" onclick="setCat('investments', this)"><div class="cat-pill-dot" style="background:#3B82F6"></div>Investments</div>
+            <div class="cat-pill" onclick="setCat('real-estate', this)"><div class="cat-pill-dot" style="background:#F59E0B"></div>Real Estate</div>
+            <div class="cat-pill" onclick="setCat('vehicle', this)"><div class="cat-pill-dot" style="background:#EF4444"></div>Vehicle</div>
+            <div class="cat-pill" onclick="setCat('retirement', this)"><div class="cat-pill-dot" style="background:#10B880"></div>Retirement</div>
+            <div class="cat-pill" onclick="setCat('gold', this)"><div class="cat-pill-dot" style="background:#D97706"></div>Gold</div>
+          </div>
+
+          <!-- Table -->
+          <div style="overflow-x:auto">
+            <table class="asset-table" id="assetTable">
+              <thead>
+                <tr>
+                  <th style="width:260px">Asset</th>
+                  <th>Category</th>
+                  <th class="right">Current Value</th>
+                  <th class="right">Purchase Price</th>
+                  <th class="right">Gain / Loss</th>
+                  <th class="center" style="width:80px">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="assetTbody">
+                <!-- Rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Footer -->
+          <div class="table-footer">
+            <div class="footer-info">Showing <strong id="showCount">8</strong> of <strong>8</strong> assets</div>
+            <div class="pagination">
+              <button class="page-btn" disabled>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+
+          <!-- Allocation Donut -->
+          <div class="alloc-card">
+            <div class="panel-title">Portfolio Allocation <span class="panel-title-link">Details →</span></div>
+            <div class="donut-wrap">
+              <svg viewBox="0 0 120 120">
+                <!-- Savings 22.6% -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#2C7C5A" stroke-width="16"
+                  stroke-dasharray="68.2 283.1" stroke-dashoffset="0" stroke-linecap="butt"/>
+                <!-- Investments 37.5% -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#3B82F6" stroke-width="16"
+                  stroke-dasharray="113.2 238.1" stroke-dashoffset="-68.2" stroke-linecap="butt"/>
+                <!-- Real Estate 15.3% -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#F59E0B" stroke-width="16"
+                  stroke-dasharray="46.1 305.2" stroke-dashoffset="-181.4" stroke-linecap="butt"/>
+                <!-- Stocks 15.2% -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#7C3AED" stroke-width="16"
+                  stroke-dasharray="45.9 305.4" stroke-dashoffset="-227.5" stroke-linecap="butt"/>
+                <!-- Others 9.4% -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#10B880" stroke-width="16"
+                  stroke-dasharray="28.3 323" stroke-dashoffset="-273.4" stroke-linecap="butt"/>
+              </svg>
+              <div class="donut-center">
+                <div class="donut-total">₹8.19L</div>
+                <div class="donut-label">Total</div>
+              </div>
+            </div>
+            <div class="alloc-legend">
+              <div class="alloc-row"><div class="alloc-dot" style="background:#3B82F6"></div><span class="alloc-name">Investments</span><span class="alloc-val">₹3.85L</span><span class="alloc-pct">47.0%</span></div>
+              <div class="alloc-row"><div class="alloc-dot" style="background:#2C7C5A"></div><span class="alloc-name">Savings</span><span class="alloc-val">₹1.85L</span><span class="alloc-pct">22.6%</span></div>
+              <div class="alloc-row"><div class="alloc-dot" style="background:#F59E0B"></div><span class="alloc-name">Real Estate</span><span class="alloc-val">₹1.25L</span><span class="alloc-pct">15.3%</span></div>
+              <div class="alloc-row"><div class="alloc-dot" style="background:#EF4444"></div><span class="alloc-name">Vehicle</span><span class="alloc-val">₹1.00L</span><span class="alloc-pct">12.2%</span></div>
+              <div class="alloc-row"><div class="alloc-dot" style="background:#10B880"></div><span class="alloc-name">Others</span><span class="alloc-val">₹0.24L</span><span class="alloc-pct">2.9%</span></div>
+            </div>
+          </div>
+
+          <!-- Performance Summary -->
+          <div class="perf-card">
+            <div class="panel-title">Performance Summary</div>
+            <div class="perf-row"><span class="perf-metric">Best Performer</span><span class="perf-val green">SBI Bluechip +16.7%</span></div>
+            <div class="perf-row"><span class="perf-metric">Worst Performer</span><span class="perf-val orange">Wagonr 0.0%</span></div>
+            <div class="perf-row"><span class="perf-metric">Avg. Return</span><span class="perf-val green">+14.1%</span></div>
+            <div class="perf-row"><span class="perf-metric">Liquid Ratio</span><span class="perf-val">22.6%</span></div>
+            <div class="perf-row"><span class="perf-metric">Asset Classes</span><span class="perf-val">6 types</span></div>
+          </div>
+
+          <!-- Insight -->
+          <div class="insight-card">
+            <div class="insight-tag">💡 Smart Insight</div>
+            <div class="insight-text">Your portfolio is <strong>47% in investments</strong> — well diversified. Consider adding a <strong>Gold or Bond</strong> asset to reduce market risk.</div>
+            <button class="insight-btn">Explore Options →</button>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- DETAIL SLIDE PANEL -->
+  <div class="overlay" id="overlay" onclick="closeDetail()"></div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <div class="detail-asset-icon" id="detailIcon" style="background:#EFF6FF">📈</div>
+      <div>
+        <div class="detail-asset-name" id="detailName">Asset Name</div>
+        <div class="detail-asset-type" id="detailType">Type</div>
+      </div>
+      <div class="detail-close" onclick="closeDetail()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-hero">
+        <div class="detail-hero-label">Current Value</div>
+        <div class="detail-hero-val" id="detailVal">₹0</div>
+        <div class="detail-hero-gain" id="detailGain">▲ +0%</div>
+      </div>
+      <div>
+        <div class="detail-section-title">Asset Details</div>
+        <div class="detail-grid">
+          <div class="detail-field"><div class="detail-field-label">Purchase Price</div><div class="detail-field-val" id="detailPurchase">—</div></div>
+          <div class="detail-field"><div class="detail-field-label">Gain / Loss</div><div class="detail-field-val" id="detailGainAbs">—</div></div>
+          <div class="detail-field"><div class="detail-field-label">Category</div><div class="detail-field-val" id="detailCat">—</div></div>
+          <div class="detail-field"><div class="detail-field-label">Sub Type</div><div class="detail-field-val" id="detailSub">—</div></div>
+          <div class="detail-field"><div class="detail-field-label">Purchase Date</div><div class="detail-field-val" id="detailDate">—</div></div>
+          <div class="detail-field"><div class="detail-field-label">Liquid Asset</div><div class="detail-field-val" id="detailLiquid">—</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="detail-section-title">Notes</div>
+        <div style="background:var(--page-bg);border-radius:9px;padding:12px;font-size:13px;color:var(--text-2);min-height:60px" id="detailNotes">No notes added.</div>
+      </div>
+    </div>
+    <div class="detail-actions">
+      <button class="detail-action-btn primary">✏️ Edit Asset</button>
+      <button class="detail-action-btn danger" onclick="closeDetail()">🗑 Delete</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const assets = [
+  { id:1, name:"HDFC Savings Account",       subtype:"Savings Account",  cat:"savings",     icon:"🏦", iconBg:"#E6F4ED", current:185000, purchase:185000, date:"2022-01-10", liquid:true,  notes:"Primary salary account." },
+  { id:2, name:"Reliance Industries",         subtype:"Stocks",           cat:"investments", icon:"📊", iconBg:"#EFF6FF", current:125000, purchase:98000,  date:"2023-03-15", liquid:false, notes:"Long-term hold." },
+  { id:3, name:"SBI Bluechip Fund",           subtype:"Mutual Fund",      cat:"investments", icon:"📈", iconBg:"#EFF6FF", current:210000, purchase:180000, date:"2022-06-01", liquid:false, notes:"SIP of ₹5000/month." },
+  { id:4, name:"Sovereign Gold Bond",         subtype:"Gold Bond",        cat:"gold",        icon:"🥇", iconBg:"#FFFBEB", current:95000,  purchase:80000,  date:"2023-09-20", liquid:false, notes:"Govt. issued gold bond." },
+  { id:5, name:"Wagonr",                      subtype:"Vehicle",          cat:"vehicle",     icon:"🚗", iconBg:"#FEE2E2", current:100000, purchase:100000, date:"2021-11-05", liquid:false, notes:"Depreciation not tracked." },
+  { id:6, name:"NPS Tier I",                  subtype:"Retirement Fund",  cat:"retirement",  icon:"🏛", iconBg:"#ECFDF5", current:45000,  purchase:40000,  date:"2022-04-01", liquid:false, notes:"Tax-saving under 80CCD." },
+  { id:7, name:"Govt Bonds",                  subtype:"Government Bond",  cat:"investments", icon:"📜", iconBg:"#EFF6FF", current:15000,  purchase:14000,  date:"2024-01-15", liquid:false, notes:"5-year maturity." },
+  { id:8, name:"Nifty BeES ETF",              subtype:"ETF",              cat:"investments", icon:"📉", iconBg:"#EFF6FF", current:5000,   purchase:4500,   date:"2024-02-10", liquid:true,  notes:"Index tracking ETF." },
+];
+
+const catLabels = { savings:"Savings", investments:"Investments", "real-estate":"Real Estate", vehicle:"Vehicle", retirement:"Retirement", gold:"Gold" };
+let activeCat = "all";
+
+function fmt(n){ return "₹" + n.toLocaleString('en-IN'); }
+function gainPct(c,p){ return (((c-p)/p)*100).toFixed(1); }
+function gainAbs(c,p){ return c-p; }
+
+function renderRows(list){
+  const tbody = document.getElementById('assetTbody');
+  if(!list.length){
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No assets found</div><div class="empty-desc">Try a different filter or search term</div></div></td></tr>`;
+    document.getElementById('showCount').textContent = 0;
+    return;
+  }
+  document.getElementById('showCount').textContent = list.length;
+  tbody.innerHTML = list.map(a => {
+    const pct = parseFloat(gainPct(a.current, a.purchase));
+    const abs = gainAbs(a.current, a.purchase);
+    const cls = pct > 0 ? 'pos' : pct < 0 ? 'neg' : 'neu';
+    const barW = Math.min(Math.abs(pct) * 2.5, 100);
+    const sign = pct > 0 ? '▲ +' : pct < 0 ? '▼ ' : '— ';
+    return `
+    <tr onclick="openDetail(${a.id})">
+      <td>
+        <div class="asset-name-cell">
+          <div class="asset-icon-wrap" style="background:${a.iconBg}">${a.icon}</div>
+          <div class="asset-name-info">
+            <div class="asset-name">${a.name}${a.liquid ? '<span class="liquid-badge">💧 Liquid</span>' : ''}</div>
+            <div class="asset-subtype">${a.subtype}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="cat-badge ${a.cat}">${catLabels[a.cat] || a.cat}</span></td>
+      <td class="right"><div class="val-primary">${fmt(a.current)}</div></td>
+      <td class="right"><div class="val-primary">${fmt(a.purchase)}</div></td>
+      <td class="right">
+        <div class="gain-badge ${cls}">${sign}${abs !== 0 ? fmt(Math.abs(abs)).replace('₹','') : '0'} (${Math.abs(pct)}%)</div>
+        <div class="return-bar-wrap"><div class="return-bar ${cls}" style="width:${barW}%"></div></div>
+      </td>
+      <td class="center">
+        <div class="row-actions">
+          <div class="row-action-btn" onclick="event.stopPropagation();alert('Edit ${a.name}')" title="Edit">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="row-action-btn danger" onclick="event.stopPropagation();alert('Delete ${a.name}')" title="Delete">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterAssets(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = assets.filter(a => activeCat === 'all' || a.cat === activeCat);
+  if(q) list = list.filter(a => a.name.toLowerCase().includes(q) || a.subtype.toLowerCase().includes(q));
+  renderRows(list);
+}
+
+function setCat(cat, el){
+  activeCat = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  filterAssets();
+}
+
+function openDetail(id){
+  const a = assets.find(x => x.id === id);
+  if(!a) return;
+  const pct = parseFloat(gainPct(a.current, a.purchase));
+  const abs = gainAbs(a.current, a.purchase);
+  const isPos = pct >= 0;
+  document.getElementById('detailIcon').textContent = a.icon;
+  document.getElementById('detailIcon').style.background = a.iconBg;
+  document.getElementById('detailName').textContent = a.name;
+  document.getElementById('detailType').textContent = a.subtype;
+  document.getElementById('detailVal').textContent = fmt(a.current);
+  const gainEl = document.getElementById('detailGain');
+  gainEl.textContent = (isPos ? '▲ +' : '▼ ') + Math.abs(pct) + '% return';
+  gainEl.className = 'detail-hero-gain' + (isPos ? '' : ' neg');
+  document.getElementById('detailPurchase').textContent = fmt(a.purchase);
+  document.getElementById('detailGainAbs').textContent = (isPos ? '+' : '-') + fmt(Math.abs(abs));
+  document.getElementById('detailGainAbs').style.color = isPos ? 'var(--green)' : 'var(--red)';
+  document.getElementById('detailCat').textContent = catLabels[a.cat] || a.cat;
+  document.getElementById('detailSub').textContent = a.subtype;
+  document.getElementById('detailDate').textContent = a.date;
+  document.getElementById('detailLiquid').textContent = a.liquid ? '✅ Yes' : '❌ No';
+  document.getElementById('detailNotes').textContent = a.notes;
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeDetail(){
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// Initial render
+renderRows(assets);
+</script>
+</body>
+</html>

@@ -178,7 +178,7 @@ export default function GoalsPage() {
                         <span className="gp-mc-label light">Net Saved</span>
                         <div className="gp-mc-icon glow-icon">{ICONS.diamond}</div>
                     </div>
-                    <div className="gp-mc-value accent">{fmtShort(totalSaved)}</div>
+                    <div className="gp-mc-value">{fmtShort(totalSaved)}</div>
                     <div className="gp-mc-badge glow">{overallPct}% overall</div>
                 </div>
                 <div className="gp-metric">
@@ -244,7 +244,7 @@ export default function GoalsPage() {
                         </div>
                         <div className="gp-pc-donut-wrap">
                             <svg width="120" height="120" viewBox="0 0 120 120">
-                                <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="18" />
+                                <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(45,122,79,0.14)" strokeWidth="18" />
                                 {arcOT > 0 && (
                                     <circle cx="60" cy="60" r="44" fill="none" stroke="#34D399" strokeWidth="16" strokeLinecap="round"
                                         transform="rotate(-90 60 60)"
@@ -260,8 +260,8 @@ export default function GoalsPage() {
                                         transform="rotate(-90 60 60)"
                                         style={{ strokeDasharray: `${arcAR} ${C}`, strokeDashoffset: -(arcOT + arcPO + 4) }} />
                                 )}
-                                <text x="60" y="56" fontSize="16" fontWeight="800" fill="#fff" textAnchor="middle" fontFamily="DM Sans,sans-serif">{overallPct}%</text>
-                                <text x="60" y="70" fontSize="9" fill="rgba(255,255,255,0.4)" textAnchor="middle" fontFamily="DM Sans,sans-serif">Complete</text>
+                                <text x="60" y="56" fontSize="16" fontWeight="800" fill="#183325" textAnchor="middle" fontFamily="Inter, sans-serif">{overallPct}%</text>
+                                <text x="60" y="70" fontSize="9" fill="#000" textAnchor="middle" fontFamily="Inter, sans-serif">Complete</text>
                             </svg>
                         </div>
                         <div className="gp-pc-stats">

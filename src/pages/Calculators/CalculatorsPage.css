@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-family);
     color: var(--text-1, #0D1F17);
     padding: 0 0 20px 0;
 }
@@ -27,7 +27,7 @@
 .calc-tab {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
   padding: 10px 8px; border-radius: 9px; border: none; background: transparent;
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  font-family: var(--font-family); font-size: 13px; font-weight: 600;
   color: var(--text-3, #8FA99C); cursor: pointer; transition: all 0.18s; white-space: nowrap;
 }
 .calc-tab:hover { background: var(--page-bg, #F0F4F1); color: var(--text-2, #4B6358); }
@@ -55,9 +55,9 @@
 .ig-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 .ig-label { font-size: 13px; font-weight: 600; color: var(--text-1, #0D1F17); }
 .ig-controls { display: flex; align-items: center; gap: 0; background: var(--page-bg, #F0F4F1); border: 1px solid var(--border, #E4EDE8); border-radius: 9px; overflow: hidden; }
-.ig-btn { width: 34px; height: 36px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2, #4B6358); font-size: 16px; font-weight: 700; transition: all 0.12s; font-family: 'DM Sans', sans-serif; }
+.ig-btn { width: 34px; height: 36px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2, #4B6358); font-size: 16px; font-weight: 700; transition: all 0.12s; font-family: var(--font-family); }
 .ig-btn:hover { background: var(--green-light, #E8F5EE); color: var(--green, #2D7A4F); }
-.ig-input { border: none; background: transparent; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 500; color: var(--text-1, #0D1F17); text-align: center; width: 120px; outline: none; padding: 0 4px; }
+.ig-input { border: none; background: transparent; font-family: var(--font-family); font-size: 14px; font-weight: 500; color: var(--text-1, #0D1F17); text-align: center; width: 120px; outline: none; padding: 0 4px; }
 .ig-input::-webkit-outer-spin-button,
 .ig-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .ig-input[type=number] { -moz-appearance: textfield; }
@@ -174,7 +174,7 @@
 /* Hero result */
 .result-hero { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border, #E4EDE8); }
 .result-hero-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-3, #8FA99C); margin-bottom: 6px; }
-.result-hero-value { font-size: 28px; font-weight: 800; letter-spacing: -0.8px; color: var(--text-1, #0D1F17); font-family: 'JetBrains Mono', monospace; }
+.result-hero-value { font-size: 28px; font-weight: 800; letter-spacing: -0.8px; color: var(--text-1, #0D1F17); font-family: var(--font-family); }
 .result-hero-badge { padding: 5px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; background: var(--green-light, #E8F5EE); color: var(--green, #2D7A4F); margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
 
 /* Donut chart */
@@ -189,13 +189,13 @@
 .legend-row { display: flex; align-items: center; gap: 10px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .legend-label { font-size: 12.5px; color: var(--text-2, #4B6358); flex: 1; }
-.legend-val { font-size: 13px; font-weight: 700; color: var(--text-1, #0D1F17); font-family: 'JetBrains Mono', monospace; }
+.legend-val { font-size: 13px; font-weight: 700; color: var(--text-1, #0D1F17); font-family: var(--font-family); }
 
 /* Divider + total */
 .result-divider { height: 1px; background: var(--border, #E4EDE8); margin: 4px 0 12px; }
 .result-total-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: linear-gradient(135deg, #0D1F17, #1a3a28); border-radius: 10px; }
 .result-total-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); }
-.result-total-val { font-size: 16px; font-weight: 800; color: var(--accent, #34D399); font-family: 'JetBrains Mono', monospace; }
+.result-total-val { font-size: 16px; font-weight: 800; color: var(--accent, #34D399); font-family: var(--font-family); }
 .result-note { font-size: 10.5px; color: var(--text-3, #8FA99C); text-align: center; margin-top: 12px; font-style: italic; }
 
 /* Extra stats row */

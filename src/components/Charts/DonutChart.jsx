@@ -164,33 +164,33 @@ export default function DonutChart({
     const totalValue = filteredData.reduce((s, d) => s + d.value, 0);
 
     return (
-        <div style={{ width: '100%', height, position: 'relative', display: 'flex', flexDirection: 'column' }}>
-            {centerLabel && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: '42%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        textAlign: 'center',
-                        pointerEvents: 'none',
-                        zIndex: 1,
-                        fontFamily: 'Inter, sans-serif',
-                    }}
-                >
-                    <div style={{ color: '#1F2937', fontWeight: 800, fontSize: '16px', lineHeight: 1.2 }}>
-                        {centerLabel}
-                    </div>
-                    {centerSub && (
-                        <div style={{ color: '#6B7280', fontSize: '11px', marginTop: '2px' }}>
-                            {centerSub}
-                        </div>
-                    )}
-                </div>
-            )}
-
+        <div style={{ width: '100%', height, display: 'flex', flexDirection: 'column' }}>
             {/* Chart */}
-            <div style={{ flex: 1, minHeight: 0 }}>
+            <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
+                {centerLabel && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '48%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            textAlign: 'center',
+                            pointerEvents: 'none',
+                            zIndex: 1,
+                            fontFamily: 'Inter, sans-serif',
+                        }}
+                    >
+                        <div style={{ color: '#1F2937', fontWeight: 800, fontSize: '16px', lineHeight: 1.2 }}>
+                            {centerLabel}
+                        </div>
+                        {centerSub && (
+                            <div style={{ color: '#6B7280', fontSize: '11px', marginTop: '2px' }}>
+                                {centerSub}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
@@ -221,7 +221,8 @@ export default function DonutChart({
                             }
                             wrapperStyle={{ zIndex: 1000, pointerEvents: 'none' }}
                             isAnimationActive={false}
-                            allowEscapeViewBox={{ x: true, y: true }}
+                            allowEscapeViewBox={{ x: false, y: false }}
+                            reverseDirection={{ x: true, y: true }}
                         />
                     </PieChart>
                 </ResponsiveContainer>

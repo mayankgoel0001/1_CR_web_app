@@ -1,4 +1,6 @@
 .portfolio-page {
+    --color-text-secondary: #000;
+    --color-text-muted: #000;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
@@ -120,9 +122,9 @@
 }
 
 .port-card.dark-card {
-    background: linear-gradient(135deg, #1A2E20 0%, #17291C 100%);
-    border: none;
-    box-shadow: 0 4px 12px rgba(26, 46, 32, 0.15);
+    background: linear-gradient(135deg, rgba(45, 122, 79, 0.12), rgba(45, 122, 79, 0.05));
+    border: 1px solid rgba(45, 122, 79, 0.24);
+    box-shadow: var(--shadow-sm);
 }
 
 .port-card-top {
@@ -141,7 +143,7 @@
 }
 
 .dark-card .port-card-label {
-    color: rgba(255, 255, 255, 0.6);
+    color: #000;
 }
 
 .port-card-icon {
@@ -155,8 +157,8 @@
 }
 
 .diamond-icon {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: rgba(45, 122, 79, 0.16);
+    color: #2D7A4F;
 }
 
 .chart-icon {
@@ -212,10 +214,24 @@
     color: #34D399;
 }
 
+.dark-card .badge-green {
+    background: rgba(45, 122, 79, 0.12);
+    border: 1px solid rgba(45, 122, 79, 0.24);
+    color: #2D7A4F;
+}
+
+.dark-card .text-white {
+    color: #183325;
+}
+
+.dark-card .text-muted-white {
+    color: #000;
+}
+
 /* Dark card badge */
 .badge-gray {
     background: #F3F4F6;
-    color: #4B5563;
+    color: #000;
 }
 
 .badge-light-red {
@@ -332,7 +348,8 @@
 .liab-table-scroll-wrap {
     overflow-y: auto;
     overflow-x: auto;
-    height: 300px; /* ~5-6 asset rows visible */
+    height: 300px;
+    /* ~5-6 asset rows visible */
 }
 
 /* Liabilities table — show 3-4 rows */
@@ -345,8 +362,15 @@
     width: 5px;
     height: 5px;
 }
-.liab-table-scroll-wrap::-webkit-scrollbar-track { background: transparent; }
-.liab-table-scroll-wrap::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 99px; }
+
+.liab-table-scroll-wrap::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.liab-table-scroll-wrap::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 99px;
+}
 
 /* Table itself */
 .liab-table {
@@ -395,6 +419,10 @@
 
 .liab-table tbody tr:hover {
     background: #F9FAFB;
+}
+
+.portfolio-asset-row {
+    cursor: pointer;
 }
 
 /* Name cell with dot + title + subtitle */
@@ -483,13 +511,139 @@
     letter-spacing: -0.01em;
 }
 
+.portfolio-asset-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 1200;
+}
+
+.portfolio-asset-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(420px, 92vw);
+    height: 100%;
+    background: #fff;
+    border-left: 1px solid var(--color-border-light);
+    box-shadow: -8px 0 30px rgba(15, 23, 42, 0.12);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    overflow-y: auto;
+    animation: portfolioAssetDrawerIn 0.22s ease-out;
+}
+
+@keyframes portfolioAssetDrawerIn {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.portfolio-asset-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.portfolio-asset-drawer-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.portfolio-asset-drawer-header p {
+    margin-top: 3px;
+    color: var(--color-text-secondary);
+    font-size: 0.84rem;
+}
+
+.portfolio-asset-drawer-header button {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--color-text-secondary);
+}
+
+.portfolio-asset-drawer-card {
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-gradient);
+    color: #fff;
+    padding: var(--spacing-md);
+    display: grid;
+    gap: 5px;
+}
+
+.portfolio-asset-drawer-card span {
+    opacity: 0.9;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.portfolio-asset-drawer-card strong {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.portfolio-asset-drawer-card small {
+    width: fit-content;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-full);
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.portfolio-asset-drawer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.portfolio-asset-drawer-item {
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    display: grid;
+    gap: 4px;
+}
+
+.portfolio-asset-drawer-item span {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+    font-weight: 700;
+}
+
+.portfolio-asset-drawer-item strong {
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.portfolio-asset-drawer-actions {
+    margin-top: auto;
+}
+
 /* Category Pill */
 .asset-category-pill {
     font-size: 0.7rem;
     padding: 4px 10px;
     border-radius: 99px;
     background: #F3F4F6;
-    color: #6B7280;
+    color: #000;
     font-weight: 600;
     text-transform: capitalize;
     letter-spacing: 0.02em;
@@ -553,5 +707,9 @@
     .assets-search input,
     .assets-search select {
         min-width: 100%;
+    }
+
+    .portfolio-asset-drawer-grid {
+        grid-template-columns: 1fr;
     }
 }

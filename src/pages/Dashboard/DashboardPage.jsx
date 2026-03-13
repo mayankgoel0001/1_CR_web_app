@@ -134,7 +134,7 @@ export default function DashboardPage() {
                         <div className="nw-divider-v"></div>
                         <div className="nw-metric">
                             <div className="nw-metric-label">ROI (YTD)</div>
-                            <div className="nw-metric-val" style={{ color: 'var(--accent)' }}>{dashboardNetWorthHero.roi}</div>
+                            <div className="nw-metric-val">{dashboardNetWorthHero.roi}</div>
                             <div className="nw-metric-sub">{dashboardNetWorthHero.roiSub}</div>
                         </div>
                     </div>
@@ -296,12 +296,12 @@ export default function DashboardPage() {
                             <path d="M0,145 C50,140 100,130 150,120 C200,110 230,100 280,88 C330,76 360,68 410,55 C460,42 500,36 550,28 C600,20 650,18 700,15" fill="none" stroke="#2D7A4F" strokeWidth="2.5" strokeLinecap="round" />
                             <circle cx="700" cy="15" r="5" fill="#2D7A4F" />
                             <circle cx="700" cy="15" r="9" fill="rgba(45,122,79,0.2)" />
-                            <text x="0" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">JAN</text>
-                            <text x="116" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">MAR</text>
-                            <text x="233" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">MAY</text>
-                            <text x="349" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">JUL</text>
-                            <text x="466" y="158" fontSize="10" fill="#8FA99C" fontFamily="DM Sans,sans-serif">SEP</text>
-                            <text x="676" y="158" fontSize="10" fill="#2D7A4F" fontFamily="DM Sans,sans-serif" fontWeight="700">NOV</text>
+                            <text x="0" y="158" fontSize="10" fill="#000" fontFamily="Inter, sans-serif">JAN</text>
+                            <text x="116" y="158" fontSize="10" fill="#000" fontFamily="Inter, sans-serif">MAR</text>
+                            <text x="233" y="158" fontSize="10" fill="#000" fontFamily="Inter, sans-serif">MAY</text>
+                            <text x="349" y="158" fontSize="10" fill="#000" fontFamily="Inter, sans-serif">JUL</text>
+                            <text x="466" y="158" fontSize="10" fill="#000" fontFamily="Inter, sans-serif">SEP</text>
+                            <text x="676" y="158" fontSize="10" fill="#2D7A4F" fontFamily="Inter, sans-serif" fontWeight="700">NOV</text>
                         </svg>
                     </div>
 

@@ -132,7 +132,7 @@ export default function InsurancePage() {
                 <div className="ins-metrics-row">
                     <div className="ins-metric-card dark c1">
                         <div className="ins-mc-top"><div className="ins-mc-label light">Total Coverage</div><div className="ins-mc-icon glow">{ICONS.shield}</div></div>
-                        <div className="ins-mc-value accent">{formatLakhs(totalCoverage)}</div>
+                        <div className="ins-mc-value ">{formatLakhs(totalCoverage)}</div>
                         <div className="ins-mc-badge glow">{activeCount} policies active</div>
                     </div>
                     <div className="ins-metric-card c2">
@@ -191,13 +191,13 @@ export default function InsurancePage() {
                             <div className="ins-cc-title">₹<span>{totalCoverage / 100000}L</span> total protection</div>
                             <div className="ins-cc-donut-wrap">
                                 <svg width="120" height="120" viewBox="0 0 120 120">
-                                    <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="18" />
+                                    <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(45,122,79,0.14)" strokeWidth="18" />
                                     <circle cx="60" cy="60" r="44" fill="none" stroke="#A78BFA" strokeWidth="16" strokeLinecap="round" transform="rotate(-90 60 60)" style={{ strokeDasharray: '160 116.5' }} />
                                     <circle cx="60" cy="60" r="44" fill="none" stroke="#FCD34D" strokeWidth="16" strokeLinecap="round" transform="rotate(-90 60 60)" style={{ strokeDasharray: '80 196.5', strokeDashoffset: -162 }} />
                                     <circle cx="60" cy="60" r="44" fill="none" stroke="#FCA5A5" strokeWidth="16" strokeLinecap="round" transform="rotate(-90 60 60)" style={{ strokeDasharray: '33 243.5', strokeDashoffset: -244 }} />
                                     <circle cx="60" cy="60" r="44" fill="none" stroke="#93C5FD" strokeWidth="16" strokeLinecap="round" transform="rotate(-90 60 60)" style={{ strokeDasharray: '6 270.5', strokeDashoffset: -279 }} />
-                                    <text x="60" y="56" fontSize="14" fontWeight="800" fill="#fff" textAnchor="middle" fontFamily="DM Sans,sans-serif">{formatLakhs(totalCoverage)}</text>
-                                    <text x="60" y="70" fontSize="9" fill="rgba(255,255,255,0.4)" textAnchor="middle" fontFamily="DM Sans,sans-serif">Coverage</text>
+                                    <text x="60" y="56" fontSize="14" fontWeight="800" fill="#183325" textAnchor="middle" fontFamily="Inter, sans-serif">{formatLakhs(totalCoverage)}</text>
+                                    <text x="60" y="70" fontSize="9" fill="#000" textAnchor="middle" fontFamily="Inter, sans-serif">Coverage</text>
                                 </svg>
                             </div>
                             <div className="ins-cc-stats">

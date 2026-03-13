@@ -11,8 +11,11 @@
     --card-bg: #FFFFFF;
     --border: #E4EDE8;
     --text-1: #0D1F17;
-    --text-2: #4B6358;
-    --text-3: #8FA99C;
+    --text-2: #000000;
+    --text-3: #000000;
+    --card-title: #183325;
+    --card-kicker: #000000;
+    --card-body: #000000;
     --red: #EF4444;
     --red-light: #FEF2F2;
     --orange: #F59E0B;
@@ -31,7 +34,7 @@
     flex-direction: column;
     gap: 20px;
     color: var(--text-1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-family);
 }
 
 /* Base resets inside the container */
@@ -89,8 +92,8 @@
 
 .score-card-title {
     font-size: 11px;
-    font-weight: 600;
-    color: var(--text-3);
+    font-weight: 700;
+    color: var(--card-title);
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin-bottom: 18px;
@@ -147,7 +150,7 @@
     font-weight: 700;
     color: var(--text-1);
     line-height: 1;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-family);
 }
 
 .gauge-denom {
@@ -180,7 +183,8 @@
 
 .score-desc {
     font-size: 12.5px;
-    color: var(--text-2);
+    color: var(--card-body);
+    font-weight: 500;
     line-height: 1.5;
     margin-bottom: 14px;
 }
@@ -221,8 +225,8 @@
 
 .bd-label {
     font-size: 11px;
-    color: var(--text-3);
-    font-weight: 500;
+    color: var(--text-2);
+    font-weight: 600;
     width: 72px;
     flex-shrink: 0;
 }
@@ -284,7 +288,8 @@
 
 /* NET WORTH HERO */
 .networth-hero {
-    background: linear-gradient(135deg, #0D1F17 0%, #1a3a28 50%, #0D1F17 100%);
+    background: linear-gradient(135deg, rgba(45, 122, 79, 0.12), rgba(45, 122, 79, 0.05));
+    border: 1px solid rgba(45, 122, 79, 0.24);
     border-radius: var(--radius);
     padding: 22px;
     position: relative;
@@ -301,7 +306,7 @@
     right: -60px;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(52, 211, 153, 0.12) 0%, transparent 65%);
+    background: radial-gradient(circle, rgba(45, 122, 79, 0.1) 0%, transparent 65%);
 }
 
 .networth-hero::after {
@@ -311,7 +316,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(45, 122, 79, 0.26), transparent);
 }
 
 .nw-top {
@@ -324,8 +329,8 @@
 
 .nw-label {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.45);
-    font-weight: 500;
+    color: #000;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin-bottom: 4px;
@@ -334,23 +339,23 @@
 .nw-value {
     font-size: 34px;
     font-weight: 700;
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
+    color: var(--card-title);
+    font-family: var(--font-family);
     line-height: 1;
     letter-spacing: -1px;
 }
 
 .nw-value span {
-    color: var(--accent);
+    color: var(--card-title);
 }
 
 .nw-change {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: rgba(52, 211, 153, 0.12);
-    border: 1px solid rgba(52, 211, 153, 0.2);
-    color: var(--accent);
+    background: rgba(45, 122, 79, 0.12);
+    border: 1px solid rgba(45, 122, 79, 0.24);
+    color: #2D7A4F;
     font-size: 11.5px;
     font-weight: 600;
     border-radius: 6px;
@@ -371,7 +376,8 @@
 
 .nw-stat-label {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.35);
+    color: #000;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -379,11 +385,11 @@
 .nw-stat-val {
     font-size: 16px;
     font-weight: 700;
-    color: #fff;
+    color: #183325;
 }
 
 .nw-stat-val.red {
-    color: #FCA5A5;
+    color: #C24141;
 }
 
 .nw-bottom {
@@ -398,7 +404,8 @@
 
 .nw-metric-label {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.38);
+    color: #000;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 2px;
@@ -407,32 +414,32 @@
 .nw-metric-val {
     font-size: 18px;
     font-weight: 700;
-    color: #fff;
+    color: #183325;
 }
 
 .nw-metric-sub {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.35);
+    color: #000;
     margin-top: 1px;
 }
 
 .nw-divider-v {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(45, 122, 79, 0.16);
 }
 
 /* NW allocation bar */
 .nw-alloc {
     padding: 12px 16px 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 1px solid rgba(45, 122, 79, 0.16);
 }
 
 .nw-alloc-label {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.35);
+    color: #000;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 8px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .nw-alloc-bar {
@@ -469,12 +476,12 @@
 
 .alloc-name {
     font-size: 10.5px;
-    color: rgba(255, 255, 255, 0.45);
+    color: #000;
 }
 
 .alloc-pct {
     font-size: 10.5px;
-    color: rgba(255, 255, 255, 0.75);
+    color: #000;
     font-weight: 700;
     margin-left: 1px;
 }
@@ -500,7 +507,7 @@
 .alerts-title {
     font-size: 14px;
     font-weight: 700;
-    color: var(--text-1);
+    color: var(--card-title);
     display: flex;
     align-items: center;
     gap: 7px;
@@ -552,12 +559,13 @@
 .alert-title {
     font-size: 12.5px;
     font-weight: 700;
-    color: var(--text-1);
+    color: var(--card-title);
 }
 
 .alert-desc {
     font-size: 11.5px;
-    color: var(--text-2);
+    color: var(--card-body);
+    font-weight: 500;
     line-height: 1.4;
 }
 
@@ -710,12 +718,6 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-}
-
-.snap-rank.r1 {
-}
-
-.snap-rank.r2 {
 }
 
 .snap-rank.r3 {
@@ -975,7 +977,7 @@
     color: var(--text-2);
     background: transparent;
     transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-family);
 }
 
 .filter-pill.active {
@@ -1001,7 +1003,7 @@
     font-weight: 800;
     color: var(--text-1);
     letter-spacing: -1px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-family);
 }
 
 .chart-badge {
