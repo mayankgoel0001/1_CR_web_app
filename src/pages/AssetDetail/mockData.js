@@ -1,60 +1,32 @@
-export const assetMock = {
-  id: 'asset_1',
-  name: 'Reliance Industries',
-  type: 'stock',
-  symbol: 'RELIANCE',
-  holding: {
-    quantity: 50,
-    avgPrice: 1960,
-    investedValue: 98000,
-    currentPrice: 2500,
-    currentValue: 125000,
-    profitLoss: 27000,
-    returnPercent: 27.6,
-  },
-  portfolioImpact: {
-    portfolioValue: 1000000,
-    allocationPercent: 12.5,
-  },
-  assetInfo: {
-    sector: 'Energy',
-    marketCap: 'Large Cap',
-    peRatio: 23,
-    dividendYield: '0.8%',
-    weekHigh52: 2900,
-    weekLow52: 2200,
-  },
-  performanceHistory: [
-    { date: 'Jan', price: 2100 },
-    { date: 'Feb', price: 2200 },
-    { date: 'Mar', price: 2400 },
-    { date: 'Apr', price: 2500 },
-  ],
-};
+import { assets } from '../../data/mockData';
 
-export const assetMocks = {
-  asset_1: assetMock,
-  '2': assetMock,
-  RELIANCE: assetMock,
-  'Reliance Industries': assetMock,
-  asset_2: {
-    id: 'asset_2',
-    name: 'SBI Bluechip Fund',
-    type: 'mutual_fund',
-    symbol: 'SBIBLUE',
+export const assetDetailTemplates = {
+  '2': {
+    symbol: 'RELIANCE',
+    type: 'stock',
     holding: {
-      quantity: 0,
-      avgPrice: 0,
-      investedValue: 180000,
-      currentPrice: 0,
-      currentValue: 210000,
-      profitLoss: 30000,
-      returnPercent: 16.7,
+      currentPrice: 2500,
     },
-    portfolioImpact: {
-      portfolioValue: 1000000,
-      allocationPercent: 21,
+    assetInfo: {
+      sector: 'Energy',
+      marketCap: 'Large Cap',
+      peRatio: 23,
+      dividendYield: '0.8%',
+      weekHigh52: 2900,
+      weekLow52: 2200,
     },
+    performanceHistory: [
+      { date: 'Jan', price: 2100 },
+      { date: 'Feb', price: 2200 },
+      { date: 'Mar', price: 2400 },
+      { date: 'Apr', price: 2500 },
+    ],
+  },
+  RELIANCE: null,
+  'Reliance Industries': null,
+  '3': {
+    symbol: 'SBIBLUE',
+    type: 'mutual_fund',
     assetInfo: {
       fundCategory: 'Large Cap Equity',
       expenseRatio: '1.54%',
@@ -71,17 +43,63 @@ export const assetMocks = {
       { date: 'Apr', price: 201 },
     ],
   },
-  '3': null,
   SBIBLUE: null,
   'SBI Bluechip Fund': null,
 };
 
-assetMocks['3'] = assetMocks.asset_2;
-assetMocks.SBIBLUE = assetMocks.asset_2;
-assetMocks['SBI Bluechip Fund'] = assetMocks.asset_2;
+assetDetailTemplates.RELIANCE = assetDetailTemplates['2'];
+assetDetailTemplates['Reliance Industries'] = assetDetailTemplates['2'];
+assetDetailTemplates.SBIBLUE = assetDetailTemplates['3'];
+assetDetailTemplates['SBI Bluechip Fund'] = assetDetailTemplates['3'];
+
+export function getBaseAssetById(assetId) {
+  if (assetId == null) {
+    return null;
+  }
+
+  return assets.find((asset) => String(asset.id) === String(assetId)) || null;
+}
+
+export function getDefaultBaseAsset() {
+  return assets.find((asset) => asset.category === 'investments') || assets[0] || null;
+}
 
 export function makeAssetDetailFromBase(baseAsset) {
-  if (!baseAsset) return assetMock;
+  if (!baseAsset) {
+    return {
+      id: 'asset_dynamic',
+      name: 'Asset',
+      type: 'stock',
+      symbol: 'ASSET',
+      holding: {
+        quantity: 0,
+        avgPrice: 0,
+        investedValue: 0,
+        currentPrice: 0,
+        currentValue: 0,
+        profitLoss: 0,
+        returnPercent: 0,
+      },
+      portfolioImpact: {
+        portfolioValue: 0,
+        allocationPercent: 0,
+      },
+      assetInfo: {
+        sector: 'N/A',
+        marketCap: 'N/A',
+        peRatio: 'N/A',
+        dividendYield: 'N/A',
+        weekHigh52: 0,
+        weekLow52: 0,
+      },
+      performanceHistory: [
+        { date: 'Jan', price: 1 },
+        { date: 'Feb', price: 1 },
+        { date: 'Mar', price: 1 },
+        { date: 'Apr', price: 1 },
+      ],
+    };
+  }
 
   const investedValue = Number(baseAsset.purchasePrice || 0);
   const currentValue = Number(baseAsset.currentValue || investedValue);

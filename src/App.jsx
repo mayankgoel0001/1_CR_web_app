@@ -3,6 +3,7 @@ import Layout from './components/Layout/Layout';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import PortfolioPage from './pages/Portfolio/PortfolioPage';
 import MyAssetsPage from './pages/MyAssets/MyAssetsPage';
+import MyLiabilitiesPage from './pages/MyLiabilities/MyLiabilitiesPage';
 import AssetDetailPage from './pages/AssetDetail/AssetDetailPage';
 import GoalsPage from './pages/Goals/GoalsPage';
 import ScenarioAnalysisPage from './pages/ScenarioAnalysis/ScenarioAnalysisPage';
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/my-assets" element={<MyAssetsPage />} />
+          <Route path="/my-liabilities" element={<MyLiabilitiesPage />} />
           <Route path="/asset/:id" element={<AssetDetailPage />} />
           <Route path="/goals" element={<GoalsPage />} />
           <Route path="/scenario-analysis" element={<ScenarioAnalysisPage />} />

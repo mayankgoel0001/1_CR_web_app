@@ -301,6 +301,45 @@
   font-weight: 600;
 }
 
+.asset-action-form {
+  display: grid;
+  gap: 8px;
+}
+
+.asset-action-form label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 4px;
+}
+
+.asset-action-form input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
+.asset-action-help-text {
+  margin-top: 2px;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.asset-action-form-footer {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.asset-action-form-footer .btn-primary,
+.asset-action-form-footer .btn-outline {
+  width: 100%;
+  justify-content: center;
+}
+
 @media (max-width: 760px) {
   .asset-detail-page {
     height: auto;

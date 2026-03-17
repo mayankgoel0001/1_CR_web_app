@@ -425,6 +425,10 @@
     cursor: pointer;
 }
 
+.portfolio-liability-row {
+    cursor: pointer;
+}
+
 /* Name cell with dot + title + subtitle */
 .liab-name-cell {
     display: flex;
@@ -634,7 +638,230 @@
 }
 
 .portfolio-asset-drawer-actions {
-    margin-top: auto;
+    margin-top: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.portfolio-asset-drawer-actions button {
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.portfolio-asset-drawer-actions .edit {
+    border: none;
+    background: #2f9463;
+    color: #fff;
+}
+
+.portfolio-asset-drawer-actions .delete {
+    border: 1px solid #fecaca;
+    background: #fff1f2;
+    color: #e11d48;
+}
+
+.portfolio-liability-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 1200;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.portfolio-liability-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(420px, 100%);
+    height: 100%;
+    background: #fff;
+    border-left: 1px solid #e2e8f0;
+    box-shadow: -10px 0 24px rgba(15, 23, 42, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    overflow-y: auto;
+}
+
+.portfolio-liability-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eef2f5;
+}
+
+.portfolio-liability-drawer-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-liability-drawer-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: #edf2ff;
+    color: #3b82f6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portfolio-liability-drawer-title h4 {
+    color: #17212b;
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.portfolio-liability-drawer-title p {
+    color: #7c8b84;
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.portfolio-liability-drawer-header button {
+    border: none;
+    background: #f1f5f9;
+    color: #6b7280;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portfolio-liability-balance-card {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    gap: 6px;
+}
+
+.portfolio-liability-balance-card span {
+    color: #111827;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+}
+
+.portfolio-liability-balance-card strong {
+    color: #111827;
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.portfolio-liability-balance-card p {
+    color: #1f2937;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.portfolio-liability-balance-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: #fecaca;
+    overflow: hidden;
+}
+
+.portfolio-liability-balance-track > div {
+    height: 100%;
+    background: #ef4444;
+}
+
+.portfolio-liability-balance-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.portfolio-liability-balance-row small {
+    color: #1f2937;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.portfolio-liability-drawer-section {
+    display: grid;
+    gap: 8px;
+}
+
+.portfolio-liability-drawer-section h5 {
+    color: #5f7669;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.portfolio-liability-drawer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.portfolio-liability-drawer-grid > div {
+    background: #f8faf9;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: grid;
+    gap: 2px;
+}
+
+.portfolio-liability-drawer-grid span {
+    color: #8b978f;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.portfolio-liability-drawer-grid strong {
+    color: #17212b;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.portfolio-liability-drawer-actions {
+    margin-top: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.portfolio-liability-drawer-actions button {
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.portfolio-liability-drawer-actions .edit {
+    border: none;
+    background: #2f9463;
+    color: #fff;
+}
+
+.portfolio-liability-drawer-actions .delete {
+    border: 1px solid #fecaca;
+    background: #fff1f2;
+    color: #e11d48;
 }
 
 /* Category Pill */

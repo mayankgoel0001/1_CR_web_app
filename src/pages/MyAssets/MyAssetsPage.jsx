@@ -21,6 +21,7 @@ import {
 import DonutChart from '../../components/Charts/DonutChart';
 import Modal from '../../components/common/Modal';
 import { assets, assetAllocation, formatCurrency } from '../../data/mockData';
+import { loadAssets, saveAssets } from '../../utils/assetStore';
 import './MyAssetsPage.css';
 
 const categoryMeta = {
@@ -81,7 +82,7 @@ function formatCompactINR(value) {
 
 export default function MyAssetsPage() {
     const navigate = useNavigate();
-    const [assetRows, setAssetRows] = useState(() => [...assets]);
+    const [assetRows, setAssetRows] = useState(() => loadAssets(assets));
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('all');
     const [sortBy, setSortBy] = useState('value');
@@ -133,6 +134,10 @@ export default function MyAssetsPage() {
 
         return list;
     }, [assetRows, search, category, sortBy]);
+
+    useEffect(() => {
+        saveAssets(assetRows);
+    }, [assetRows]);
 
     useEffect(() => {
         setPage(1);
@@ -294,7 +299,14 @@ export default function MyAssetsPage() {
             <header className="my-assets-header">
                 <h1>My Assets</h1>
                 <p>
-                    Portfolio
+                    <button
+                        type="button"
+                        className="my-assets-breadcrumb-link"
+                        onClick={() => navigate('/portfolio')}
+                        aria-label="Go to Portfolio"
+                    >
+                        Portfolio
+                    </button>
                     <MdKeyboardArrowRight size={12} />
                     <span>My Assets</span>
                 </p>

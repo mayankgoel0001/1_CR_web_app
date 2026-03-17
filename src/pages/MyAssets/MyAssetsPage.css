@@ -24,6 +24,20 @@
     font-weight: 600;
 }
 
+.my-assets-breadcrumb-link {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    cursor: pointer;
+}
+
+.my-assets-breadcrumb-link:hover {
+    color: var(--color-primary);
+}
+
 .my-assets-summary-strip {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));

@@ -116,6 +116,11 @@ export const liabilities = [
   { id: 1, name: 'Car Loan - HDFC', type: 'Long-term Liabilities', subType: 'Car Loan', lender: 'HDFC Bank', principalAmount: 800000, currentBalance: 52000, interestRate: 8.5, monthlyPayment: 16500, startDate: '2022-08-15', maturityDate: '2027-08-15', isActive: true },
   { id: 2, name: 'Credit Card - Axis', type: 'Current Liabilities', subType: 'Credit Card', lender: 'Axis Bank', principalAmount: 35700, currentBalance: 35700, interestRate: 36, monthlyPayment: 5000, startDate: '2026-02-01', maturityDate: null, isActive: true },
   { id: 3, name: 'Personal Loan - SBI', type: 'Long-term Liabilities', subType: 'Personal Loan', lender: 'SBI', principalAmount: 100000, currentBalance: 20000, interestRate: 12, monthlyPayment: 8900, startDate: '2025-06-01', maturityDate: '2026-06-01', isActive: true },
+  { id: 4, name: 'Home Loan - ICICI', type: 'Long-term Liabilities', subType: 'Home Loan', lender: 'ICICI Bank', principalAmount: 2500000, currentBalance: 1480000, interestRate: 8.9, monthlyPayment: 28500, startDate: '2021-04-10', maturityDate: '2031-04-10', isActive: true },
+  { id: 5, name: 'Education Loan - Kotak', type: 'Long-term Liabilities', subType: 'Education Loan', lender: 'Kotak Mahindra Bank', principalAmount: 600000, currentBalance: 285000, interestRate: 10.5, monthlyPayment: 12200, startDate: '2023-07-01', maturityDate: '2029-07-01', isActive: true },
+  { id: 6, name: 'Credit Card - HDFC', type: 'Current Liabilities', subType: 'Credit Card', lender: 'HDFC Bank', principalAmount: 18200, currentBalance: 18200, interestRate: 34, monthlyPayment: 4000, startDate: '2026-01-20', maturityDate: null, isActive: true },
+  { id: 7, name: 'Consumer Durable EMI - Bajaj', type: 'Current Liabilities', subType: 'Consumer Loan', lender: 'Bajaj Finserv', principalAmount: 95000, currentBalance: 42000, interestRate: 16, monthlyPayment: 5600, startDate: '2025-11-05', maturityDate: '2027-05-05', isActive: true },
+  { id: 8, name: 'Gold Loan - Muthoot', type: 'Current Liabilities', subType: 'Gold Loan', lender: 'Muthoot Finance', principalAmount: 150000, currentBalance: 86000, interestRate: 13.5, monthlyPayment: 7200, startDate: '2025-08-12', maturityDate: '2027-02-12', isActive: true },
 ];
 
 export const goals = [
@@ -192,7 +197,11 @@ export const assetAllocation = [
 ];
 
 export const liabilityAllocation = [
-  { name: 'Car Loan', value: 52000, color: '#2563EB' },
-  { name: 'Credit Card', value: 35700, color: '#EF4444' },
+  { name: 'Home Loan', value: 1480000, color: '#2563EB' },
+  { name: 'Education Loan', value: 285000, color: '#8B5CF6' },
+  { name: 'Gold Loan', value: 86000, color: '#EAB308' },
+  { name: 'Car Loan', value: 52000, color: '#06B6D4' },
+  { name: 'Consumer Loan', value: 42000, color: '#10B981' },
   { name: 'Personal Loan', value: 20000, color: '#F59E0B' },
+  { name: 'Credit Card', value: 53900, color: '#EF4444' },
 ];

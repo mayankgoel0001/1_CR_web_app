@@ -1,13 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { assets, liabilities, netWorthData, assetAllocation, liabilityAllocation, formatCurrency } from '../../data/mockData';
+import { assets, liabilities, netWorthData, liabilityAllocation, formatCurrency } from '../../data/mockData';
 import { ICONS } from '../../utils/icons';
+import { loadAssets, saveAssets } from '../../utils/assetStore';
 
 // Format number with commas, no rupee sign
 function formatNumber(num) {
     if (num == null) return '';
     return num.toLocaleString('en-IN');
+}
+
+function formatMonthYear(dateStr) {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return 'N/A';
+    return new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' }).format(date);
+}
+
+function monthDiff(startDate, endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null;
+    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    return Math.max(0, months);
 }
 import DonutChart from '../../components/Charts/DonutChart';
 import Modal from '../../components/common/Modal';
@@ -61,8 +77,12 @@ export default function PortfolioPage() {
     const [timeFilter, setTimeFilter] = useState('6M');
 
     // Local data state (initialized from mock data)
-    const [localAssets, setLocalAssets] = useState(assets);
+    const [localAssets, setLocalAssets] = useState(() => loadAssets(assets));
     const [localLiabilities, setLocalLiabilities] = useState(liabilities);
+
+    useEffect(() => {
+        saveAssets(localAssets);
+    }, [localAssets]);
 
     // Asset filters
     const [search, setSearch] = useState('');
@@ -74,8 +94,43 @@ export default function PortfolioPage() {
 
     // Modals state
     const [isAssetModalOpen, setIsAssetModalOpen] = useState(false);
+    const [isAssetEditModalOpen, setIsAssetEditModalOpen] = useState(false);
     const [isLiabilityModalOpen, setIsLiabilityModalOpen] = useState(false);
+    const [isLiabilityEditModalOpen, setIsLiabilityEditModalOpen] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState(null);
+    const [selectedLiabilityId, setSelectedLiabilityId] = useState(null);
+    const [assetEditForm, setAssetEditForm] = useState({
+        name: '',
+        category: 'savings',
+        subType: '',
+        currentValue: '',
+        purchasePrice: '',
+        purchaseDate: '',
+        isLiquid: false,
+    });
+    const [liabilityEditForm, setLiabilityEditForm] = useState({
+        name: '',
+        type: '',
+        lender: '',
+        principalAmount: '',
+        currentBalance: '',
+        monthlyPayment: '',
+        interestRate: '',
+        maturityDate: '',
+        isGuarantor: false,
+    });
+
+    useEffect(() => {
+        if (selectedAsset || selectedLiabilityId) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [selectedAsset, selectedLiabilityId]);
 
     // Form submit handlers
     const handleAddAsset = (e) => {
@@ -117,6 +172,20 @@ export default function PortfolioPage() {
     const totalLiabilities = localLiabilities.reduce((sum, l) => sum + l.currentBalance, 0);
     const totalMonthlyEMI = localLiabilities.reduce((sum, l) => sum + (l.monthlyPayment || 0), 0);
 
+    const allocationData = useMemo(() => {
+        const byCategory = localAssets.reduce((acc, asset) => {
+            const key = asset.category || 'other';
+            acc[key] = (acc[key] || 0) + (Number(asset.currentValue) || 0);
+            return acc;
+        }, {});
+
+        return Object.entries(byCategory).map(([key, value]) => ({
+            name: key.replace('_', ' ').replace(/\b\w/g, (ch) => ch.toUpperCase()),
+            value,
+            color: categoryColors[key] || categoryColors.other,
+        }));
+    }, [localAssets]);
+
     const filteredAssets = localAssets.filter(a => {
         const matchSearch = a.name.toLowerCase().includes(search.toLowerCase());
         const matchCategory = categoryFilter === 'All' || a.category === categoryFilter;
@@ -128,6 +197,125 @@ export default function PortfolioPage() {
         const matchCategory = liabilityCategoryFilter === 'All' || l.type === liabilityCategoryFilter;
         return matchSearch && matchCategory;
     });
+
+    const normalizedLiabilities = useMemo(
+        () => localLiabilities.map((loan) => {
+            const principal = Number(loan.principalAmount ?? loan.originalAmount ?? 0);
+            const outstanding = Number(loan.currentBalance ?? 0);
+            const monthlyPayment = Number(loan.monthlyPayment ?? 0);
+            const repaid = Math.max(principal - outstanding, 0);
+            const repaidPct = principal > 0 ? (repaid / principal) * 100 : 0;
+            let tenureLeft = monthDiff(new Date(), loan.maturityDate);
+
+            if (tenureLeft == null && monthlyPayment > 0) {
+                tenureLeft = Math.ceil(outstanding / monthlyPayment);
+            }
+
+            return {
+                ...loan,
+                principal,
+                outstanding,
+                monthlyPayment,
+                repaid,
+                repaidPct,
+                tenureLeft: tenureLeft == null ? 0 : tenureLeft,
+            };
+        }),
+        [localLiabilities]
+    );
+
+    const selectedLiability = useMemo(
+        () => normalizedLiabilities.find((loan) => String(loan.id) === String(selectedLiabilityId)) || null,
+        [normalizedLiabilities, selectedLiabilityId]
+    );
+
+    const selectedLiabilityDetails = useMemo(() => {
+        if (!selectedLiability) {
+            return null;
+        }
+
+        const paidAmount = Math.max(selectedLiability.principal - selectedLiability.outstanding, 0);
+        const monthlyInterest = (selectedLiability.outstanding * (Number(selectedLiability.interestRate) || 0)) / 1200;
+        const principalComponent = Math.max(selectedLiability.monthlyPayment - monthlyInterest, 0);
+        const totalInterest = Math.max(
+            (selectedLiability.monthlyPayment * selectedLiability.tenureLeft) - selectedLiability.outstanding,
+            0
+        );
+
+        return {
+            paidAmount,
+            monthlyInterest,
+            principalComponent,
+            totalInterest,
+        };
+    }, [selectedLiability]);
+
+    const handleOpenLiabilityEdit = () => {
+        if (!selectedLiability) {
+            return;
+        }
+
+        setLiabilityEditForm({
+            name: selectedLiability.name || '',
+            type: selectedLiability.type || 'Long-term Liabilities',
+            lender: selectedLiability.lender || '',
+            principalAmount: String(selectedLiability.principal || selectedLiability.originalAmount || 0),
+            currentBalance: String(selectedLiability.outstanding || selectedLiability.currentBalance || 0),
+            monthlyPayment: String(selectedLiability.monthlyPayment || 0),
+            interestRate: String(selectedLiability.interestRate || 0),
+            maturityDate: selectedLiability.maturityDate || '',
+            isGuarantor: Boolean(selectedLiability.isGuarantor),
+        });
+        setIsLiabilityEditModalOpen(true);
+    };
+
+    const handleEditLiabilitySubmit = (e) => {
+        e.preventDefault();
+        if (!selectedLiability) {
+            return;
+        }
+
+        const updated = {
+            name: liabilityEditForm.name.trim(),
+            type: liabilityEditForm.type,
+            lender: liabilityEditForm.lender.trim(),
+            originalAmount: Number(liabilityEditForm.principalAmount),
+            currentBalance: Number(liabilityEditForm.currentBalance),
+            monthlyPayment: Number(liabilityEditForm.monthlyPayment),
+            interestRate: Number(liabilityEditForm.interestRate),
+            maturityDate: liabilityEditForm.maturityDate,
+            isGuarantor: Boolean(liabilityEditForm.isGuarantor),
+        };
+
+        if (!updated.name || Number.isNaN(updated.currentBalance) || Number.isNaN(updated.monthlyPayment)) {
+            return;
+        }
+
+        setLocalLiabilities((prev) => prev.map((loan) => (
+            String(loan.id) === String(selectedLiability.id)
+                ? {
+                    ...loan,
+                    ...updated,
+                }
+                : loan
+        )));
+
+        setIsLiabilityEditModalOpen(false);
+    };
+
+    const handleDeleteLiability = () => {
+        if (!selectedLiability) {
+            return;
+        }
+
+        const confirmed = window.confirm(`Delete ${selectedLiability.name} from liabilities?`);
+        if (!confirmed) {
+            return;
+        }
+
+        setLocalLiabilities((prev) => prev.filter((loan) => String(loan.id) !== String(selectedLiability.id)));
+        setSelectedLiabilityId(null);
+    };
 
     const isAssetDetailType = (asset) => {
         const type = `${asset.type || ''}`.toLowerCase();
@@ -146,6 +334,70 @@ export default function PortfolioPage() {
             return;
         }
         setSelectedAsset(asset);
+    };
+
+    const handleOpenAssetEdit = () => {
+        if (!selectedAsset) {
+            return;
+        }
+
+        setAssetEditForm({
+            name: selectedAsset.name || '',
+            category: selectedAsset.category || 'savings',
+            subType: selectedAsset.subType || '',
+            currentValue: String(selectedAsset.currentValue || 0),
+            purchasePrice: String(selectedAsset.purchasePrice || 0),
+            purchaseDate: selectedAsset.purchaseDate || '',
+            isLiquid: Boolean(selectedAsset.isLiquid),
+        });
+        setIsAssetEditModalOpen(true);
+    };
+
+    const handleEditAssetSubmit = (e) => {
+        e.preventDefault();
+        if (!selectedAsset) {
+            return;
+        }
+
+        const updated = {
+            name: assetEditForm.name.trim(),
+            category: assetEditForm.category,
+            subType: assetEditForm.subType.trim(),
+            currentValue: Number(assetEditForm.currentValue),
+            purchasePrice: Number(assetEditForm.purchasePrice),
+            purchaseDate: assetEditForm.purchaseDate,
+            isLiquid: Boolean(assetEditForm.isLiquid),
+        };
+
+        if (!updated.name || Number.isNaN(updated.currentValue) || Number.isNaN(updated.purchasePrice)) {
+            return;
+        }
+
+        setLocalAssets((prev) => prev.map((asset) => (
+            String(asset.id) === String(selectedAsset.id)
+                ? {
+                    ...asset,
+                    ...updated,
+                }
+                : asset
+        )));
+
+        setSelectedAsset((prev) => (prev ? { ...prev, ...updated } : prev));
+        setIsAssetEditModalOpen(false);
+    };
+
+    const handleDeleteAsset = () => {
+        if (!selectedAsset) {
+            return;
+        }
+
+        const confirmed = window.confirm(`Delete ${selectedAsset.name} from assets?`);
+        if (!confirmed) {
+            return;
+        }
+
+        setLocalAssets((prev) => prev.filter((asset) => String(asset.id) !== String(selectedAsset.id)));
+        setSelectedAsset(null);
     };
 
     return (
@@ -292,11 +544,11 @@ export default function PortfolioPage() {
                     <h4>Asset Allocation</h4>
                     <br />
                     <DonutChart
-                        data={assetAllocation}
+                        data={allocationData}
                         height={260}
                         innerR={50}
                         outerR={75}
-                        colors={assetAllocation.map(a => a.color)}
+                        colors={allocationData.map(a => a.color)}
                         tooltipFmt={(val) => formatCurrency(val)}
                         centerLabel={totalAssets >= 10000000 ? `₹${(totalAssets / 10000000).toFixed(1)}Cr` : `₹${(totalAssets / 100000).toFixed(1)}L`}
                         centerSub="Total Assets"
@@ -411,6 +663,11 @@ export default function PortfolioPage() {
                             <div className="portfolio-asset-drawer-item"><span>Purchase Date</span><strong>{selectedAsset.purchaseDate || 'N/A'}</strong></div>
                             <div className="portfolio-asset-drawer-item"><span>Liquid Asset</span><strong>{selectedAsset.isLiquid ? 'Yes' : 'No'}</strong></div>
                         </div>
+
+                        <footer className="portfolio-asset-drawer-actions">
+                            <button type="button" className="edit" onClick={handleOpenAssetEdit}>Edit Asset</button>
+                            <button type="button" className="delete" onClick={handleDeleteAsset}>Delete</button>
+                        </footer>
                     </aside>
                 </div>
             )}
@@ -435,7 +692,7 @@ export default function PortfolioPage() {
                                     <option value="Long-term Liabilities">Long-term</option>
                                     <option value="Current Liabilities">Current</option>
                                 </select>
-                                <button className="btn-primary" onClick={() => setIsLiabilityModalOpen(true)}>+ Add</button>
+                                <button className="btn-primary" onClick={() => navigate('/my-liabilities')}>View More</button>
                             </div>
                         </div>
 
@@ -455,7 +712,7 @@ export default function PortfolioPage() {
                                     {filteredLiabilities.map(l => {
                                         const rateColor = l.interestRate >= 30 ? 'rate-red' : l.interestRate >= 15 ? 'rate-orange' : 'rate-green';
                                         return (
-                                            <tr key={l.id}>
+                                            <tr key={l.id} className="portfolio-liability-row" onClick={() => setSelectedLiabilityId(l.id)}>
                                                 <td>
                                                     <div className="liab-name-cell">
                                                         <div className="liab-dot" style={{ background: l.interestRate >= 30 ? '#EF4444' : l.interestRate >= 15 ? '#F59E0B' : '#3B82F6' }} />
@@ -493,6 +750,7 @@ export default function PortfolioPage() {
                             height={260}
                             innerR={50}
                             outerR={80}
+                            hideLabels
                             colors={liabilityAllocation.map(l => l.color)}
                             tooltipFmt={(val) => formatCurrency(val)}
                             centerLabel={totalLiabilities >= 10000000 ? `₹${(totalLiabilities / 10000000).toFixed(1)}Cr` : `₹${(totalLiabilities / 100000).toFixed(1)}L`}
@@ -501,6 +759,65 @@ export default function PortfolioPage() {
                     </div>
                 </div>
             </div>
+
+            {selectedLiability && selectedLiabilityDetails && (
+                <div className="portfolio-liability-drawer-overlay" onClick={() => setSelectedLiabilityId(null)}>
+                    <aside className="portfolio-liability-drawer" onClick={(e) => e.stopPropagation()}>
+                        <header className="portfolio-liability-drawer-header">
+                            <div className="portfolio-liability-drawer-title">
+                                <span className="portfolio-liability-drawer-icon" aria-hidden="true">{ICONS.creditCard}</span>
+                                <div>
+                                    <h4>{selectedLiability.name}</h4>
+                                    <p>{selectedLiability.lender} · {selectedLiability.interestRate}% p.a.</p>
+                                </div>
+                            </div>
+                            <button type="button" onClick={() => setSelectedLiabilityId(null)} aria-label="Close details">
+                                <MdClose />
+                            </button>
+                        </header>
+
+                        <section className="portfolio-liability-balance-card">
+                            <span>Outstanding Balance</span>
+                            <strong>{formatCurrency(selectedLiability.outstanding)}</strong>
+                            <p>
+                                Original: {formatCurrency(selectedLiability.principal)} · {selectedLiability.repaidPct.toFixed(0)}% repaid
+                            </p>
+                            <div className="portfolio-liability-balance-track">
+                                <div style={{ width: `${Math.min(100, Math.max(0, selectedLiability.repaidPct))}%` }} />
+                            </div>
+                            <div className="portfolio-liability-balance-row">
+                                <small>Paid {formatCurrency(selectedLiabilityDetails.paidAmount)}</small>
+                                <small>Remaining {formatCurrency(selectedLiability.outstanding)}</small>
+                            </div>
+                        </section>
+
+                        <section className="portfolio-liability-drawer-section">
+                            <h5>Loan Details</h5>
+                            <div className="portfolio-liability-drawer-grid">
+                                <div><span>EMI / Month</span><strong>{formatCurrency(selectedLiability.monthlyPayment)}</strong></div>
+                                <div><span>Interest Rate</span><strong>{selectedLiability.interestRate}% p.a.</strong></div>
+                                <div><span>Tenure Left</span><strong>{selectedLiability.tenureLeft} months</strong></div>
+                                <div><span>Loan End Date</span><strong>{formatMonthYear(selectedLiability.maturityDate)}</strong></div>
+                                <div><span>Total Interest</span><strong>{formatCurrency(selectedLiabilityDetails.totalInterest)}</strong></div>
+                                <div><span>Guarantor</span><strong>{selectedLiability.isGuarantor ? 'Yes' : 'None'}</strong></div>
+                            </div>
+                        </section>
+
+                        <section className="portfolio-liability-drawer-section">
+                            <h5>This Month's EMI Breakup</h5>
+                            <div className="portfolio-liability-drawer-grid">
+                                <div><span>Principal Component</span><strong>{formatCurrency(selectedLiabilityDetails.principalComponent)}</strong></div>
+                                <div><span>Interest Component</span><strong>{formatCurrency(selectedLiabilityDetails.monthlyInterest)}</strong></div>
+                            </div>
+                        </section>
+
+                        <footer className="portfolio-liability-drawer-actions">
+                            <button type="button" className="edit" onClick={handleOpenLiabilityEdit}>Edit Loan</button>
+                            <button type="button" className="delete" onClick={handleDeleteLiability}>Delete</button>
+                        </footer>
+                    </aside>
+                </div>
+            )}
 
             {/* Modals */}
             <Modal isOpen={isAssetModalOpen} onClose={() => setIsAssetModalOpen(false)} title="Add New Asset">
@@ -613,6 +930,240 @@ export default function PortfolioPage() {
                     <div className="modal-actions">
                         <button type="button" className="modal-btn modal-btn-cancel" onClick={() => setIsLiabilityModalOpen(false)}>Cancel</button>
                         <button type="submit" className="modal-btn modal-btn-submit">Add Liability</button>
+                    </div>
+                </form>
+            </Modal>
+
+            <Modal isOpen={isLiabilityEditModalOpen} onClose={() => setIsLiabilityEditModalOpen(false)} title="Edit Liability">
+                <form className="modal-form" onSubmit={handleEditLiabilitySubmit}>
+                    <div className="modal-form-group">
+                        <label>Liability Name *</label>
+                        <div className="modal-input-wrapper">
+                            <span className="modal-input-icon">T</span>
+                            <input
+                                type="text"
+                                value={liabilityEditForm.name}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, name: e.target.value }))}
+                                placeholder="e.g. Home Loan - SBI"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Liability Type *</label>
+                        <div className="modal-input-wrapper">
+                            <MdHome className="modal-input-icon" />
+                            <select
+                                value={liabilityEditForm.type}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, type: e.target.value }))}
+                                required
+                            >
+                                <option value="Long-term Liabilities">Long-term Liabilities</option>
+                                <option value="Current Liabilities">Current Liabilities</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Lender Name</label>
+                        <div className="modal-input-wrapper">
+                            <MdBusiness className="modal-input-icon" />
+                            <input
+                                type="text"
+                                value={liabilityEditForm.lender}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, lender: e.target.value }))}
+                                placeholder="e.g. HDFC Bank"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Principal Amount (₹) *</label>
+                        <div className="modal-input-wrapper">
+                            <MdAttachMoney className="modal-input-icon" />
+                            <input
+                                type="number"
+                                min="0"
+                                value={liabilityEditForm.principalAmount}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, principalAmount: e.target.value }))}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Current Outstanding Balance (₹) *</label>
+                        <div className="modal-input-wrapper">
+                            <MdAttachMoney className="modal-input-icon" />
+                            <input
+                                type="number"
+                                min="0"
+                                value={liabilityEditForm.currentBalance}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, currentBalance: e.target.value }))}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>EMI / Month (₹) *</label>
+                        <div className="modal-input-wrapper">
+                            <MdAttachMoney className="modal-input-icon" />
+                            <input
+                                type="number"
+                                min="0"
+                                value={liabilityEditForm.monthlyPayment}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, monthlyPayment: e.target.value }))}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Interest Rate (% p.a.)</label>
+                        <div className="modal-input-wrapper">
+                            <span className="modal-input-icon">%</span>
+                            <input
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                value={liabilityEditForm.interestRate}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, interestRate: e.target.value }))}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Maturity Date</label>
+                        <div className="modal-input-wrapper">
+                            <MdCalendarToday className="modal-input-icon" />
+                            <input
+                                type="date"
+                                value={liabilityEditForm.maturityDate || ''}
+                                onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, maturityDate: e.target.value }))}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '8px 4px' }}>
+                        <label style={{ margin: 0 }}>Are you a Guarantor?</label>
+                        <input
+                            type="checkbox"
+                            checked={liabilityEditForm.isGuarantor}
+                            onChange={(e) => setLiabilityEditForm((prev) => ({ ...prev, isGuarantor: e.target.checked }))}
+                            style={{ width: '20px', height: '20px', accentColor: 'var(--color-primary)' }}
+                        />
+                    </div>
+
+                    <div className="modal-actions">
+                        <button type="button" className="modal-btn modal-btn-cancel" onClick={() => setIsLiabilityEditModalOpen(false)}>Cancel</button>
+                        <button type="submit" className="modal-btn modal-btn-submit">Save Changes</button>
+                    </div>
+                </form>
+            </Modal>
+
+            <Modal isOpen={isAssetEditModalOpen} onClose={() => setIsAssetEditModalOpen(false)} title="Edit Asset">
+                <form className="modal-form" onSubmit={handleEditAssetSubmit}>
+                    <div className="modal-form-group">
+                        <label>Asset Name *</label>
+                        <div className="modal-input-wrapper">
+                            <span className="modal-input-icon">T</span>
+                            <input
+                                type="text"
+                                value={assetEditForm.name}
+                                onChange={(e) => setAssetEditForm((prev) => ({ ...prev, name: e.target.value }))}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Asset Category *</label>
+                        <div className="modal-input-wrapper">
+                            <MdOutlineCategory className="modal-input-icon" />
+                            <select
+                                value={assetEditForm.category}
+                                onChange={(e) => setAssetEditForm((prev) => ({ ...prev, category: e.target.value }))}
+                                required
+                            >
+                                <option value="savings">Savings</option>
+                                <option value="investments">Investments</option>
+                                <option value="real_estate">Real Estate</option>
+                                <option value="vehicles">Vehicles</option>
+                                <option value="retirement">Retirement</option>
+                                <option value="crypto">Crypto</option>
+                                <option value="personal_property">Personal Property</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Sub Type</label>
+                        <div className="modal-input-wrapper">
+                            <span className="modal-input-icon">T</span>
+                            <input
+                                type="text"
+                                value={assetEditForm.subType}
+                                onChange={(e) => setAssetEditForm((prev) => ({ ...prev, subType: e.target.value }))}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Current Value (₹) *</label>
+                        <div className="modal-input-wrapper">
+                            <MdAttachMoney className="modal-input-icon" />
+                            <input
+                                type="number"
+                                min="0"
+                                value={assetEditForm.currentValue}
+                                onChange={(e) => setAssetEditForm((prev) => ({ ...prev, currentValue: e.target.value }))}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Purchase Price (₹) *</label>
+                        <div className="modal-input-wrapper">
+                            <MdShowChart className="modal-input-icon" />
+                            <input
+                                type="number"
+                                min="0"
+                                value={assetEditForm.purchasePrice}
+                                onChange={(e) => setAssetEditForm((prev) => ({ ...prev, purchasePrice: e.target.value }))}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group">
+                        <label>Purchase Date</label>
+                        <div className="modal-input-wrapper">
+                            <MdCalendarToday className="modal-input-icon" />
+                            <input
+                                type="date"
+                                value={assetEditForm.purchaseDate || ''}
+                                onChange={(e) => setAssetEditForm((prev) => ({ ...prev, purchaseDate: e.target.value }))}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="modal-form-group" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '8px 4px' }}>
+                        <label style={{ margin: 0 }}>Is Liquid Asset?</label>
+                        <input
+                            type="checkbox"
+                            checked={assetEditForm.isLiquid}
+                            onChange={(e) => setAssetEditForm((prev) => ({ ...prev, isLiquid: e.target.checked }))}
+                            style={{ width: '20px', height: '20px', accentColor: 'var(--color-primary)' }}
+                        />
+                    </div>
+
+                    <div className="modal-actions">
+                        <button type="button" className="modal-btn modal-btn-cancel" onClick={() => setIsAssetEditModalOpen(false)}>Cancel</button>
+                        <button type="submit" className="modal-btn modal-btn-submit">Save Changes</button>
                     </div>
                 </form>
             </Modal>
