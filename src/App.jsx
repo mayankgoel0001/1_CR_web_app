@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/common/ScrollToTop';
 import Layout from './components/Layout/Layout';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import FinancialDetailPage from './pages/FinancialDetail/FinancialDetailPage';
@@ -17,6 +18,7 @@ import SettingsPage from './pages/Settings/SettingsPage';
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardPage />} />
