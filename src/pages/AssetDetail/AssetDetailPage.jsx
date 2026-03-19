@@ -10,7 +10,8 @@ import ActionButtons from './components/ActionButtons';
 import Modal from '../../components/common/Modal';
 import { deleteAssetById, updateAssetById } from '../../utils/assetStore';
 import { assetDetailTemplates, getBaseAssetById, getDefaultBaseAsset, makeAssetDetailFromBase } from './mockData';
-import './AssetDetailPage.css';
+
+
 
 function mergeWithTemplate(baseDetail, template) {
   if (!template) return baseDetail;
@@ -222,13 +223,13 @@ export default function AssetDetailPage() {
 
   return (
     <>
-      <div className="asset-detail-page">
-        <div className="asset-detail-layout">
-          <main className="asset-detail-left">
+      <div className="flex flex-col gap-md h-[calc(100vh-theme(spacing.header)-48px)] max-md:h-auto">
+        <div className="grid grid-cols-[minmax(0,1fr)_370px] gap-md items-start h-full overflow-hidden max-md:grid-cols-1 max-md:h-auto max-md:overflow-visible">
+          <main className="grid gap-md h-full overflow-y-auto pr-[6px] max-md:h-auto max-md:overflow-visible max-md:pr-0">
             <AssetHeader asset={asset} />
             <PerformanceChart data={asset.performanceHistory} asset={asset} />
 
-            <section className="asset-detail-info-grid">
+            <section className="grid grid-cols-2 gap-md max-md:grid-cols-1">
               <PortfolioAllocation allocation={asset.portfolioImpact} />
               <AssetInfo info={asset.assetInfo} type={asset.type} />
             </section>
@@ -236,8 +237,8 @@ export default function AssetDetailPage() {
             <InsightsCard asset={asset} />
           </main>
 
-          <aside className="asset-detail-right">
-            <div className="asset-detail-sticky">
+          <aside className="relative h-full">
+            <div className="sticky top-0 grid gap-[10px] max-h-full overflow-y-auto max-md:static max-md:max-h-none max-md:overflow-visible">
               <HoldingSummary holding={asset.holding} />
               <ActionButtons
                 onEdit={openEditModal}
@@ -250,64 +251,84 @@ export default function AssetDetailPage() {
       </div>
 
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Asset">
-        <form className="asset-action-form" onSubmit={handleEditSubmit}>
-          <label htmlFor="asset-name">Asset Name</label>
-          <input
-            id="asset-name"
-            type="text"
-            value={editForm.name}
-            onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
-            required
-          />
-          <label htmlFor="invested-value">Invested Amount (INR)</label>
-          <input
-            id="invested-value"
-            type="number"
-            min="0"
-            step="0.01"
-            value={editForm.investedValue}
-            onChange={(e) => setEditForm((prev) => ({ ...prev, investedValue: e.target.value }))}
-            required
-          />
+        <form className="grid gap-[16px]" onSubmit={handleEditSubmit}>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[11px] font-bold text-[#8FA99C] uppercase tracking-[0.8px]" htmlFor="asset-name">Asset Name</label>
+            <div className="relative flex items-center border border-[#E4EDE8] rounded-[8px] overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+              <input
+                id="asset-name"
+                className="w-full border-none outline-none py-[10px] px-[12px] text-[13px] text-[#0D1F17] bg-transparent"
+                type="text"
+                value={editForm.name}
+                onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[11px] font-bold text-[#8FA99C] uppercase tracking-[0.8px]" htmlFor="invested-value">Invested Amount (INR)</label>
+            <div className="relative flex items-center border border-[#E4EDE8] rounded-[8px] overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+              <input
+                id="invested-value"
+                className="w-full border-none outline-none py-[10px] px-[12px] text-[13px] text-[#0D1F17] bg-transparent"
+                type="number"
+                min="0"
+                step="0.01"
+                value={editForm.investedValue}
+                onChange={(e) => setEditForm((prev) => ({ ...prev, investedValue: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
 
-          <label htmlFor="current-value">Current Value (INR)</label>
-          <input
-            id="current-value"
-            type="number"
-            min="0"
-            step="0.01"
-            value={editForm.currentValue}
-            onChange={(e) => setEditForm((prev) => ({ ...prev, currentValue: e.target.value }))}
-            required
-          />
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[11px] font-bold text-[#8FA99C] uppercase tracking-[0.8px]" htmlFor="current-value">Current Value (INR)</label>
+            <div className="relative flex items-center border border-[#E4EDE8] rounded-[8px] overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+              <input
+                id="current-value"
+                className="w-full border-none outline-none py-[10px] px-[12px] text-[13px] text-[#0D1F17] bg-transparent"
+                type="number"
+                min="0"
+                step="0.01"
+                value={editForm.currentValue}
+                onChange={(e) => setEditForm((prev) => ({ ...prev, currentValue: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
 
-          <div className="asset-action-form-footer">
-            <button type="button" className="btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
-            <button type="submit" className="btn-primary">Save Changes</button>
+          <div className="flex justify-end gap-[12px] mt-[24px]">
+            <button type="button" className="px-[20px] py-[10px] rounded-[6px] text-[13px] font-bold transition-all cursor-pointer bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+            <button type="submit" className="px-[20px] py-[10px] rounded-[6px] text-[13px] font-bold transition-all cursor-pointer bg-[#2D7A4F] text-white hover:bg-[#256341] shadow-sm">Save Changes</button>
           </div>
         </form>
       </Modal>
 
       <Modal isOpen={isQuantityModalOpen} onClose={() => setIsQuantityModalOpen(false)} title="Update Quantity">
-        <form className="asset-action-form" onSubmit={handleQuantitySubmit}>
-          <label htmlFor="asset-quantity">Quantity</label>
-          <input
-            id="asset-quantity"
-            type="number"
-            min="0"
-            step="0.01"
-            value={quantityForm.quantity}
-            onChange={(e) => setQuantityForm({ quantity: e.target.value })}
-            required
-          />
+        <form className="grid gap-[16px]" onSubmit={handleQuantitySubmit}>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[11px] font-bold text-[#8FA99C] uppercase tracking-[0.8px]" htmlFor="asset-quantity">Quantity</label>
+            <div className="relative flex items-center border border-[#E4EDE8] rounded-[8px] overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+              <input
+                id="asset-quantity"
+                className="w-full border-none outline-none py-[10px] px-[12px] text-[13px] text-[#0D1F17] bg-transparent"
+                type="number"
+                min="0"
+                step="0.01"
+                value={quantityForm.quantity}
+                onChange={(e) => setQuantityForm({ quantity: e.target.value })}
+                required
+              />
+            </div>
+          </div>
 
-          <p className="asset-action-help-text">
+          <p className="mt-[-8px] text-[#8FA99C] text-[12px]">
             Holdings are scaled based on the updated quantity.
           </p>
 
-          <div className="asset-action-form-footer">
-            <button type="button" className="btn-outline" onClick={() => setIsQuantityModalOpen(false)}>Cancel</button>
-            <button type="submit" className="btn-primary">Update</button>
+          <div className="flex justify-end gap-[12px] mt-[8px]">
+            <button type="button" className="px-[20px] py-[10px] rounded-[6px] text-[13px] font-bold transition-all cursor-pointer bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]" onClick={() => setIsQuantityModalOpen(false)}>Cancel</button>
+            <button type="submit" className="px-[20px] py-[10px] rounded-[6px] text-[13px] font-bold transition-all cursor-pointer bg-[#2D7A4F] text-white hover:bg-[#256341] shadow-sm">Update</button>
           </div>
         </form>
       </Modal>

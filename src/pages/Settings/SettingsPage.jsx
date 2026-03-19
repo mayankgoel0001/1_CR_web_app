@@ -1,5 +1,4 @@
 import { MdChevronRight, MdDownload, MdEdit, MdLock, MdNotifications, MdPrivacyTip, MdUpdate, MdImportExport, MdDelete, MdPalette, MdAttachMoney, MdLanguage, MdFingerprint, MdHelpOutline, MdContactSupport, MdStar, MdDescription } from 'react-icons/md';
-import './SettingsPage.css';
 
 const sections = [
     {
@@ -42,30 +41,30 @@ const sections = [
 
 export default function SettingsPage() {
     return (
-        <div className="settings-page">
-            <div className="page-header">
-                <h1>Settings</h1>
-                <p>Manage your account and preferences</p>
+        <div className="flex flex-col gap-lg">
+            <div className="mb-[24px]">
+                <h1 className="text-[22px] font-bold text-[#0D1F17]">Settings</h1>
+                <p className="text-[12.5px] text-[#8FA99C]">Manage your account and preferences</p>
             </div>
 
             {sections.map((section, i) => (
-                <div key={i} className="settings-section card">
-                    <h3>{section.title}</h3>
-                    <div className="settings-list">
+                <div key={i} className="bg-white rounded-[14px] border border-[#E4EDE8] shadow-[0_1px_3px_rgba(0,0,0,0.06)] p-[24px] transition-shadow duration-200 hover:shadow-md">
+                    <h3 className="text-[15px] font-bold text-[#0D1F17] mb-3">{section.title}</h3>
+                    <div className="flex flex-col divide-y divide-border-light">
                         {section.items.map((item, j) => (
-                            <div key={j} className="settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon" style={item.danger ? { color: '#EF4444' } : {}}>
+                            <div key={j} className="flex items-center justify-between py-3 cursor-pointer hover:bg-bg rounded-lg px-2 transition-colors duration-150">
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center text-lg ${item.danger ? 'bg-[#FEF2F2] text-[#EF4444]' : 'bg-primary-light text-primary'}`}>
                                         <item.icon />
                                     </div>
-                                    <div className="settings-item-text">
-                                        <h5 style={item.danger ? { color: '#EF4444' } : {}}>{item.label}</h5>
-                                        <p>{item.desc}</p>
+                                    <div>
+                                        <h5 className={`text-[13px] font-bold ${item.danger ? 'text-[#EF4444]' : 'text-[#0D1F17]'}`}>{item.label}</h5>
+                                        <p className="text-[12px] text-[#8FA99C] mt-[2px]">{item.desc}</p>
                                     </div>
                                 </div>
-                                <div className="settings-item-right">
-                                    {item.value && <span className="settings-item-value">{item.value}</span>}
-                                    <MdChevronRight className="settings-chevron" />
+                                <div className="flex items-center gap-2">
+                                    {item.value && <span className="text-[11px] font-bold text-[#8FA99C] uppercase tracking-[0.4px] bg-[#F0F4F1] border border-[#E4EDE8] rounded-md px-2.5 py-1">{item.value}</span>}
+                                    <MdChevronRight className="text-[#8FA99C] text-lg" />
                                 </div>
                             </div>
                         ))}
@@ -73,10 +72,10 @@ export default function SettingsPage() {
                 </div>
             ))}
 
-            <button className="btn-outline" style={{ color: '#EF4444', borderColor: '#EF4444', alignSelf: 'flex-start' }}>
+            <button className="inline-flex items-center gap-[8px] px-[20px] py-[10px] bg-transparent text-[#EF4444] border border-[#EF4444] rounded-[6px] text-[13px] font-bold transition-all duration-200 cursor-pointer hover:bg-[#FEF2F2] self-start" onClick={() => console.log('Logout')}>
                 Logout
             </button>
-            <div className="settings-footer">Version 1.0.0</div>
+            <div className="text-center text-[#8FA99C] text-[11px] pb-2">Version 1.0.0</div>
         </div>
     );
 }
