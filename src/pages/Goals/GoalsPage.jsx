@@ -95,7 +95,7 @@ export default function GoalsPage() {
     return (
         <div className="flex flex-col gap-5">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between items-center gap-4">
                 <div>
                     <div className="text-[22px] font-bold text-[#0D1F17]">My Goals</div>
                     <div className="text-[12.5px] text-[#8FA99C] mt-[3px]">
@@ -109,7 +109,7 @@ export default function GoalsPage() {
             </div>
 
             {/* Metric Cards */}
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 {[
                     { label: 'Net Saved', value: fmtShort(totalSaved), badge: `${overallPct}% overall`, icon: ICONS.diamond, iconCls: 'bg-[rgba(52,211,153,0.15)] text-[#2D7A4F]', valCls: 'text-[#0D1F17]', badgeCls: 'bg-[rgba(45,122,79,0.12)] text-[#2D7A4F] border border-[rgba(45,122,79,0.24)]', dark: true },
                     { label: 'On Track', value: onTrackList.length, badge: 'Goals healthy', icon: ICONS.check, iconCls: 'bg-[#E8F5E9] text-[#2D7A4F]', valCls: 'text-[#2D9D5E]', badgeCls: 'bg-[rgba(45,122,79,0.12)] text-[#2D7A4F]' },
@@ -132,7 +132,7 @@ export default function GoalsPage() {
             </div>
 
             {/* 3-column Body */}
-            <div className="grid gap-4 items-start" style={{ gridTemplateColumns: '260px 1fr 280px' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_280px] gap-4 items-start">
 
                 {/* LEFT */}
                 <div className="flex flex-col gap-3">
@@ -199,7 +199,7 @@ export default function GoalsPage() {
                         </select>
                     </div>
 
-                    <div className="flex flex-col gap-2.5 overflow-y-auto pr-[15px]" style={{ height: 540, scrollbarWidth: 'thin', scrollbarColor: '#C4C4C4 #F3F4F6' }}>
+                    <div className="flex flex-col gap-2.5 overflow-y-auto pr-[15px] max-lg:h-auto lg:h-[540px]" style={{ scrollbarWidth: 'thin', scrollbarColor: '#C4C4C4 #F3F4F6' }}>
                         {filtered.map(goal => {
                             const sc = statusClass(goal.status);
                             const cc = scColors[sc];

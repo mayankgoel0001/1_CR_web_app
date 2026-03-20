@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { assets, liabilities, netWorthData, liabilityAllocation, formatCurrency } from '../../data/mockData';
@@ -66,6 +66,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function PortfolioPage() {
     const navigate = useNavigate();
+    const assetsTableRef = useRef(null);
+    const liabilitiesTableRef = useRef(null);
     const [timeFilter, setTimeFilter] = useState('6M');
 
     // Local data state (initialized from mock data)
@@ -393,26 +395,48 @@ export default function PortfolioPage() {
     };
 
     return (
-        <div className="flex flex-col gap-[24px]">
+        <div className="flex flex-col gap-[24px] pb-[80px] sm:pb-0">
             {/* Portfolio Header & Cards */}
             <div>
-                <div className="flex justify-between items-start flex-wrap gap-[16px]">
-                    <div>
-                        <h2 className="text-[22px] font-bold text-[#0D1F17] m-0 mb-[4px]">Portfolio Overview</h2>
-                        <p className="text-[12.5px] text-[#8FA99C] m-0">Track all your assets, liabilities and net worth in one place</p>
-                        <br />
+                <div className="flex justify-between items-center flex-wrap gap-4 mb-2">
+                    <div className="flex-1 min-w-[240px]">
+                        <h1 className="text-[22px] font-bold text-[#0D1F17] m-0">Portfolio Overview</h1>
+                        <p className="text-[12.5px] text-[#8FA99C] m-0 mt-1">Track all your assets, liabilities and net worth in one place</p>
                     </div>
-                    <div className="flex gap-[8px]">
-                        <button className="bg-white text-text-secondary border border-border px-[16px] py-[8px] rounded-[6px] text-[13px] font-semibold cursor-pointer transition-colors hover:bg-bg" onClick={() => setIsLiabilityModalOpen(true)}>
-                            + Add Liability
+                    {/* Desktop Buttons */}
+                    <div className="hidden sm:flex items-center gap-2">
+                        <button 
+                            className="flex items-center justify-center gap-2 bg-white text-[#0D1F17] border border-[#E4EDE8] px-4 py-2.5 rounded-[10px] text-[13px] font-bold shadow-sm transition-all hover:bg-[#F0F4F1] hover:border-[#2D7A4F] active:scale-[0.98]" 
+                            onClick={() => setIsLiabilityModalOpen(true)}
+                        >
+                            <span className="text-[16px]">+</span> Add Liability
                         </button>
-                        <button className="bg-[#2E7950] text-white border-none px-[16px] py-[8px] rounded-[6px] text-[13px] font-semibold cursor-pointer transition-colors hover:bg-[#256341]" onClick={() => setIsAssetModalOpen(true)}>
-                            + Add Asset
+                        <button 
+                            className="flex items-center justify-center gap-2 bg-[#2D7A4F] text-white border-none px-4 py-2.5 rounded-[10px] text-[13px] font-bold shadow-sm transition-all hover:bg-[#256341] hover:shadow-md active:scale-[0.98]" 
+                            onClick={() => setIsAssetModalOpen(true)}
+                        >
+                            <span className="text-[16px] text-white">+</span> Add Asset
                         </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[16px] mt-[0px]">
+                {/* Mobile Fixed Footer Actions */}
+                <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-[#E4EDE8] p-4 flex gap-3 z-[100] shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+                    <button 
+                        className="flex-1 flex items-center justify-center gap-2 bg-white text-[#0D1F17] border border-[#E4EDE8] py-3.5 rounded-[12px] text-[14px] font-bold shadow-sm active:scale-[0.96]" 
+                        onClick={() => setIsLiabilityModalOpen(true)}
+                    >
+                        + Liability
+                    </button>
+                    <button 
+                        className="flex-1 flex items-center justify-center gap-2 bg-[#2D7A4F] text-white border-none py-3.5 rounded-[12px] text-[14px] font-bold shadow-lg active:scale-[0.96]" 
+                        onClick={() => setIsAssetModalOpen(true)}
+                    >
+                        + Add Asset
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-[16px] mt-4">
                     <KPICard
                         label="Net Worth"
                         value={formatCurrency(netWorthData.currentNetWorth)}
@@ -440,6 +464,7 @@ export default function PortfolioPage() {
                             </span>
                         }
                         subText={`Across ${new Set(localAssets.map(a => a.category)).size} categories`}
+                        onClick={() => assetsTableRef.current?.scrollIntoView({ behavior: 'smooth' })}
                     />
 
                     <KPICard
@@ -455,6 +480,7 @@ export default function PortfolioPage() {
                             </span>
                         }
                         subText={`${formatCurrency(totalMonthlyEMI)}/mo total EMI`}
+                        onClick={() => liabilitiesTableRef.current?.scrollIntoView({ behavior: 'smooth' })}
                     />
 
                     <KPICard
@@ -476,7 +502,7 @@ export default function PortfolioPage() {
 
             {/* Net Worth Chart + Allocation */}
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[24px]">
-                <div className="bg-white rounded-[14px] border border-[#E4EDE8] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-[32px] transition-shadow duration-200 hover:shadow-md">
+                <div className="bg-white rounded-[14px] border border-[#E4EDE8] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-6 max-sm:p-4 transition-shadow duration-200 hover:shadow-md">
                     <div className="flex justify-between items-start mb-[20px] flex-wrap gap-[16px]">
                         <div>
                             <h4 className="font-bold text-[15px] text-[#0D1F17] mb-[4px]">Net Worth Trend</h4>
@@ -544,7 +570,7 @@ export default function PortfolioPage() {
                     </ResponsiveContainer>
                 </div>
 
-                <div className="bg-white rounded-[14px] border border-[#E4EDE8] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-[24px] max-md:p-[16px] transition-shadow duration-200 hover:shadow-md">
+                <div className="bg-white rounded-[14px] border border-[#E4EDE8] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-6 max-sm:p-4 transition-shadow duration-200 hover:shadow-md">
                     <h4 className="font-bold text-[15px] text-[#0D1F17]">Asset Allocation</h4>
                     <br />
                     <DonutChart
@@ -561,7 +587,7 @@ export default function PortfolioPage() {
             </div>
 
             {/* Assets Table */}
-            <div className="flex flex-col gap-[16px]">
+            <div className="flex flex-col gap-[16px]" ref={assetsTableRef}>
                 <div className="bg-white rounded-[14px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-200 hover:shadow-md p-0 overflow-hidden max-md:p-[16px]">
                     {/* Header row */}
                     <div className="flex items-center justify-between gap-[16px] p-[20px_24px_16px] border-b border-border flex-wrap">
@@ -678,7 +704,7 @@ export default function PortfolioPage() {
             )}
 
             {/* Liabilities */}
-            <div className="flex flex-col gap-[16px]">
+            <div className="flex flex-col gap-[16px]" ref={liabilitiesTableRef}>
                 <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[24px]">
                     <div className="bg-white rounded-[14px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-200 hover:shadow-md p-0 overflow-hidden max-md:p-[16px]">
                         {/* Liabilities table header */}

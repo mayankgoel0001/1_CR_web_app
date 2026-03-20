@@ -423,18 +423,18 @@ export default function CalculatorsPage() {
                     </div>
                 </div>
 
-                <div className="flex bg-white border border-[#E4EDE8] rounded-[12px] p-[5px] gap-[4px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] flex-wrap md:flex-nowrap">
+                <div className="bg-white border border-[#E4EDE8] rounded-[12px] p-[5px] flex gap-[4px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-x-auto scrollbar-hide">
                     {calculators.map(c => (
                         <button
                             key={c.key}
-                            className={`flex-1 flex items-center justify-center gap-[7px] py-[10px] px-[8px] rounded-[9px] border-none text-[13px] font-bold cursor-pointer transition-all duration-150 whitespace-nowrap basis-[45%] grow md:basis-auto ${
+                            className={`flex-1 flex items-center justify-center gap-[7px] py-[10px] px-[16px] rounded-[9px] border-none text-[13px] font-bold cursor-pointer transition-all duration-150 whitespace-nowrap ${
                                 activeCalc === c.key
                                     ? 'bg-[#2D7A4F] text-white shadow-sm'
                                     : 'bg-transparent text-[#8FA99C] hover:bg-[#F0F4F1] hover:text-[#2D7A4F]'
                             }`}
                             onClick={() => setActiveCalc(c.key)}
                         >
-                            {c.icon}
+                            <span className="text-[15px]">{c.icon}</span>
                             {c.label}
                         </button>
                     ))}

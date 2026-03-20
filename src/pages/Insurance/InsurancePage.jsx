@@ -66,7 +66,7 @@ export default function InsurancePage() {
     return (
         <div className="flex flex-col gap-5">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between items-center gap-4">
                 <div>
                     <h1 className="text-[22px] font-bold text-[#0D1F17]">Insurance & Protection</h1>
                     <div className="text-[12.5px] text-[#8FA99C] mt-[3px]">{activeCount} active policies · {formatLakhs(totalCoverage)} total coverage · Next renewal in {monthsAway} months</div>
@@ -78,7 +78,7 @@ export default function InsurancePage() {
             </div>
 
             {/* Metric Cards */}
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 {[
                     { label: 'Total Coverage', value: formatLakhs(totalCoverage), badge: `${activeCount} policies active`, icon: ICONS.shield, iconCls: 'bg-[rgba(45,122,79,0.16)] text-[#2D7A4F]', valCls: 'text-[#0D1F17]', badgeCls: 'bg-[rgba(45,122,79,0.12)] text-[#2D7A4F] border border-[rgba(45,122,79,0.24)]', dark: true },
                     { label: 'Annual Premium', value: formatCurrency(totalPremium), badge: `${formatCurrency(Math.floor(totalPremium / 12))}/month`, icon: ICONS.creditCard, iconCls: 'bg-[#E8F5E9] text-[#2D7A4F]', valCls: 'text-[#2D7A4F]', badgeCls: 'bg-[rgba(45,122,79,0.12)] text-[#2D7A4F]' },
@@ -101,7 +101,7 @@ export default function InsurancePage() {
             </div>
 
             {/* 3-col body */}
-            <div className="grid gap-4 items-start" style={{ gridTemplateColumns: '230px 1fr 260px' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[230px_1fr_260px] gap-4 items-start">
 
                 {/* LEFT */}
                 <div className="flex flex-col gap-3">
@@ -167,7 +167,7 @@ export default function InsurancePage() {
                             <option>Sort: Type</option>
                         </select>
                     </div>
-                    <div className="flex flex-col gap-3 overflow-y-auto" style={{ maxHeight: 540, scrollbarWidth: 'thin' }}>
+                    <div className="flex flex-col gap-3 overflow-y-auto max-lg:max-h-none lg:max-h-[540px]" style={{ scrollbarWidth: 'thin' }}>
                         {filtered.map(policy => {
                             const tc = typeColors[getPolicyClass(policy.type)];
                             const isRenewingSoon = monthDiff(new Date(), new Date(policy.renewalDate)) <= 12;

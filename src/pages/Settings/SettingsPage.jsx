@@ -62,7 +62,7 @@ export default function SettingsPage() {
                                         <p className="text-[12px] text-[#8FA99C] mt-[2px]">{item.desc}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-wrap justify-end">
                                     {item.value && <span className="text-[11px] font-bold text-[#8FA99C] uppercase tracking-[0.4px] bg-[#F0F4F1] border border-[#E4EDE8] rounded-md px-2.5 py-1">{item.value}</span>}
                                     <MdChevronRight className="text-[#8FA99C] text-lg" />
                                 </div>

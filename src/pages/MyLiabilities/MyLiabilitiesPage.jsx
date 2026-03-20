@@ -472,7 +472,7 @@ export default function MyLiabilitiesPage() {
             </div>
           </div>
 
-          <div className="flex gap-[8px]">
+          <div className="flex flex-wrap gap-[8px] mt-2 lg:mt-0">
             <button type="button" className="bg-white text-[#0D1F17] border border-[#E4EDE8] px-4 py-2 rounded-md text-[13px] font-bold hover:bg-[#F8FAF9]" onClick={() => navigate('/portfolio')}>
               View Portfolio
             </button>
@@ -482,7 +482,7 @@ export default function MyLiabilitiesPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-md mt-md">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-md mt-md">
           <KPICard
             label="Total Outstanding"
             value={formatCurrency(totals.totalOutstanding)}
@@ -532,7 +532,7 @@ export default function MyLiabilitiesPage() {
         </div>
       </section>
 
-      <section className="grid grid-cols-[minmax(0,1fr)_310px] gap-[10px] items-start mt-md">
+      <section className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_310px] gap-[10px] items-start mt-md">
         <div className="grid gap-[10px]">
           <article className="bg-white rounded-[14px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-200 hover:shadow-md p-0 overflow-hidden h-[500px] flex flex-col">
             <div className="border-b border-border p-[14px] flex justify-between items-center gap-[10px] flex-wrap">

@@ -139,17 +139,19 @@ export default function MyAssetsPage() {
     return (
         <div className="flex flex-col gap-lg">
             {/* Header */}
-            <header>
-                <h1 className="text-[22px] font-bold text-[#0D1F17]">My Assets</h1>
-                <p className="mt-[4px] text-[#8FA99C] text-[12.5px] inline-flex items-center gap-1.5 font-medium">
-                    <button type="button" className="bg-transparent border-0 text-inherit font-inherit p-0 cursor-pointer hover:text-[#2D7A4F]" onClick={() => navigate('/portfolio')}>Portfolio</button>
-                    <MdKeyboardArrowRight size={12} />
-                    <span className="text-[#2D7A4F] font-bold">My Assets</span>
-                </p>
+            <header className="flex flex-wrap justify-between items-start gap-4">
+                <div>
+                    <h1 className="text-[22px] font-bold text-[#0D1F17]">My Assets</h1>
+                    <p className="mt-[4px] text-[#8FA99C] text-[12.5px] inline-flex items-center gap-1.5 font-medium">
+                        <button type="button" className="bg-transparent border-0 text-inherit font-inherit p-0 cursor-pointer hover:text-[#2D7A4F]" onClick={() => navigate('/portfolio')}>Portfolio</button>
+                        <MdKeyboardArrowRight size={12} />
+                        <span className="text-[#2D7A4F] font-bold">My Assets</span>
+                    </p>
+                </div>
             </header>
 
             {/* Summary Strip */}
-            <section className="grid grid-cols-4 gap-md">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
                 {[
                     { icon: <MdAccountBalanceWallet />, label: 'Total Portfolio Value', value: formatCurrency(totals.totalPortfolioValue), sub: `${assetRows.length} assets tracked` },
                     { icon: <MdAccountBalance />, label: 'Total Invested', value: formatCurrency(totals.totalInvested), sub: 'Cost basis' },
@@ -170,7 +172,7 @@ export default function MyAssetsPage() {
 
 
             {/* Main Grid */}
-            <section className="grid gap-md items-start" style={{ gridTemplateColumns: 'minmax(0,1fr) 320px' }}>
+            <section className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-md items-start">
                 {/* Table Card */}
                 <div className="bg-white rounded-[14px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-0 overflow-hidden">
                     {/* Toolbar */}

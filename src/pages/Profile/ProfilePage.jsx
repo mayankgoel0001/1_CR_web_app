@@ -49,16 +49,16 @@ export default function ProfilePage() {
     return (
         <div className="flex flex-col gap-5">
             {/* Header Card */}
-            <div className="bg-white rounded-[14px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-[24px] transition-shadow duration-200 hover:shadow-md flex items-center gap-[24px]">
+            <div className="bg-white rounded-[14px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-[24px] transition-shadow duration-200 hover:shadow-md flex flex-col md:flex-row items-center gap-[24px]">
                 <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-br from-[#2D7A4F] to-[#1a3a28] text-white text-[24px] font-bold flex items-center justify-center flex-shrink-0 shadow-sm">
                     {saved.firstName[0]}{saved.lastName[0]}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 text-center md:text-left">
                     <h2 className="text-[22px] font-bold text-[#0D1F17] m-0">{saved.firstName} {saved.lastName}</h2>
                     <p className="text-[12.5px] text-[#8FA99C] mt-[2px] m-0">{saved.occupation}</p>
                     <span className="text-[#2D7A4F] text-[12px] font-medium">{saved.email}</span>
                 </div>
-                <div className="flex gap-[12px]">
+                <div className="flex flex-wrap justify-center gap-[12px]">
                     {isEditing ? (
                         <>
                             <button className="inline-flex items-center gap-[8px] px-[20px] py-[10px] bg-[#2D7A4F] text-white rounded-[6px] text-[13px] font-bold transition-all duration-200 cursor-pointer hover:bg-[#256341] hover:-translate-y-[1px] shadow-sm" onClick={handleSave}>Save Changes</button>
@@ -73,7 +73,7 @@ export default function ProfilePage() {
             {/* Personal Info */}
             <div className="bg-white rounded-[14px] border border-[#E4EDE8] shadow-[0_1px_3px_rgba(0,0,0,0.06)] p-[24px] transition-shadow duration-200 hover:shadow-md">
                 <h3 className="text-[15px] font-bold text-[#0D1F17] mb-[20px]">Personal Information</h3>
-                <div className="grid grid-cols-3 gap-y-[28px] gap-x-[24px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-[28px] gap-x-[24px]">
                     <div className="flex flex-col gap-1">
                         <label className="text-[11px] font-bold text-[#8FA99C] uppercase tracking-[0.8px]">Full Name</label>
                         {isEditing ? (
@@ -109,7 +109,7 @@ export default function ProfilePage() {
                     <h3 className="text-[15px] font-bold text-[#0D1F17]">Family Members</h3>
                     <button className="inline-flex items-center gap-[8px] px-[20px] py-[10px] bg-transparent text-[#2D7A4F] border border-[#E4EDE8] rounded-[6px] text-[13px] font-bold transition-all duration-200 cursor-pointer hover:bg-[#F0F4F1]" onClick={openAddModal}>+ Add Member</button>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {family.map(member => (
                         <div key={member.id} className="border border-[#E4EDE8] rounded-[10px] bg-[#F0F4F1] p-[14px] hover:border-[#2D7A4F] hover:bg-[#E8F5EE] transition-all duration-150">
                             <div className="flex justify-between items-start mb-1">
@@ -164,7 +164,7 @@ export default function ProfilePage() {
                         Edit
                     </button>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {[
                         { label: 'Monthly Income', value: formatCurrency(saved.monthlyIncome), color: 'text-text' },
                         { label: 'Monthly Expenses', value: formatCurrency(saved.monthlyExpenses), color: 'text-[#EF4444]' },

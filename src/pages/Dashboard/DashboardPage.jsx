@@ -85,7 +85,7 @@ export default function DashboardPage() {
             </svg>
 
             {/* ROW 1: Score + Net Worth Hero + Alerts */}
-            <div className="grid gap-4 animate-fade-up" style={{ gridTemplateColumns: '340px 1fr 300px', animationDelay: '0.05s' }}>
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] xl:grid-cols-[340px_1fr_300px] gap-4 animate-fade-up" style={{ animationDelay: '0.05s' }}>
 
                 {/* Financial Health Score */}
                 <div className="bg-white border border-[#E4EDE8] rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-6 relative overflow-hidden flex flex-col">
@@ -178,13 +178,13 @@ export default function DashboardPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="grid" style={{ gridTemplateColumns: '1fr 1px 1fr' }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-[1fr_1px_1fr]">
                         <div className="p-3 pl-4">
                             <div className="text-[10px] text-black font-semibold uppercase tracking-[0.6px] mb-0.5">Cash Runway</div>
                             <div className="text-[18px] font-bold text-[#183325]">{dashboardNetWorthHero.cashRunway}</div>
                             <div className="text-[11px] text-black mt-px">{dashboardNetWorthHero.cashRunwaySub}</div>
                         </div>
-                        <div className="bg-[rgba(45,122,79,0.16)]" />
+                        <div className="hidden sm:block bg-[rgba(45,122,79,0.16)]" />
                         <div className="p-3 pl-4">
                             <div className="text-[10px] text-black font-semibold uppercase tracking-[0.6px] mb-0.5">ROI (YTD)</div>
                             <div className="text-[18px] font-bold text-[#183325]">{dashboardNetWorthHero.roi}</div>
@@ -238,7 +238,7 @@ export default function DashboardPage() {
             </div>
 
             {/* ROW 2: Portfolio Snapshot + Goals Progress */}
-            <div className="grid grid-cols-2 gap-4 animate-fade-up" style={{ animationDelay: '0.15s' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-up" style={{ animationDelay: '0.15s' }}>
 
                 {/* Top Performing Assets */}
                 <div className="bg-white border border-[#E4EDE8] rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-5">
@@ -324,7 +324,7 @@ export default function DashboardPage() {
             </div>
 
             {/* ROW 3: Net Worth Chart + Right Panel */}
-            <div className="grid gap-4 animate-fade-up" style={{ gridTemplateColumns: '1fr 300px', animationDelay: '0.25s' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4 animate-fade-up" style={{ animationDelay: '0.25s' }}>
 
                 {/* Net Worth Chart */}
                 <div className="bg-white border border-[#E4EDE8] rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-6">
@@ -399,7 +399,7 @@ export default function DashboardPage() {
                     {/* Quick Actions */}
                     <div className="bg-white border border-[#E4EDE8] rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] p-[18px] flex-1">
                         <div className="text-[13px] font-bold text-[#0D1F17] mb-3.5">Quick Actions</div>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-2">
                             {[
                                 { label: 'Add Asset', icon: ICONS.briefcase, bg: '#E8F5EE' },
                                 { label: 'Add Debt', icon: ICONS.creditCard, bg: '#FEE2E2' },

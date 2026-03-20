@@ -21,7 +21,7 @@ export default function Header({ onMenuClick }) {
     const go = (path) => { setDropdownOpen(false); navigate(path); };
 
     return (
-        <header className="fixed top-0 left-[250px] right-0 h-[64px] bg-white border-b border-[#F0F0F0] flex items-center justify-between px-xl z-[90] max-lg:left-0 max-lg:px-md">
+        <header className="fixed top-0 left-[250px] right-0 h-[64px] bg-white border-b border-[#F0F0F0] flex items-center justify-between px-xl z-[90] max-lg:left-0 max-lg:px-md max-sm:px-4">
             <div className="flex items-center gap-sm">
                 <button
                     className="hidden max-lg:flex items-center justify-center text-2xl text-text p-xs mr-xs"
@@ -31,11 +31,11 @@ export default function Header({ onMenuClick }) {
                 </button>
                 <div className="flex items-center gap-sm text-[15px] font-bold text-[#0D1F17] max-lg:text-[14px]">
                     <MdAutoAwesome className="text-[#2D7A4F] text-[1.2rem] max-lg:hidden" />
-                    <span>{getGreeting()}, {userData.firstName}</span>
+                    <span className="truncate">{getGreeting()}, {userData.firstName}</span>
                 </div>
             </div>
 
-            <div className="flex items-center gap-md">
+            <div className="flex items-center gap-md max-sm:gap-xs">
                 <button
                     className="w-[38px] h-[38px] rounded-full flex items-center justify-center text-text-secondary text-[1.2rem] transition-all duration-150 border border-[#F0F0F0] bg-white hover:bg-bg hover:text-text"
                     title="Refresh"

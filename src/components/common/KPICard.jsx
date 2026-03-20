@@ -23,14 +23,16 @@ const KPICard = ({
     dark = false, 
     valueColor = 'text-[#0D1F17]',
     iconBg = 'bg-[rgba(45,122,79,0.08)]',
-    iconColor = 'text-[#2D7A4F]'
+    iconColor = 'text-[#2D7A4F]',
+    onClick
 }) => {
-    const containerClasses = dark 
-        ? "bg-gradient-to-br from-[rgba(45,122,79,0.12)] to-[rgba(45,122,79,0.05)] border border-[rgba(45,122,79,0.24)] shadow-sm rounded-[14px] p-6 flex flex-col relative transition-shadow duration-200 hover:shadow-md"
-        : "bg-white border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] rounded-[14px] p-6 flex flex-col relative transition-shadow duration-200 hover:shadow-md h-full";
+    const containerClasses = `${dark 
+        ? "bg-gradient-to-br from-[rgba(45,122,79,0.12)] to-[rgba(45,122,79,0.05)] border border-[rgba(45,122,79,0.24)] shadow-sm rounded-[14px] p-6 max-sm:p-4 flex flex-col relative transition-shadow duration-200 hover:shadow-md"
+        : "bg-white border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] rounded-[14px] p-6 max-sm:p-4 flex flex-col relative transition-shadow duration-200 hover:shadow-md h-full"
+    } ${onClick ? 'cursor-pointer' : ''}`;
 
     return (
-        <article className={containerClasses}>
+        <article className={containerClasses} onClick={onClick}>
             <div className="flex justify-between items-center mb-2">
                 <span className="text-[11px] font-bold text-black uppercase tracking-[0.8px]">{label}</span>
                 <div className={`w-[34px] h-[34px] rounded-md flex items-center justify-center text-[18px] flex-shrink-0 ${iconBg} ${iconColor}`}>
@@ -38,7 +40,7 @@ const KPICard = ({
                 </div>
             </div>
             
-            <div className={`text-[26px] font-bold leading-tight tracking-tight ${valueColor}`}>
+            <div className={`text-[26px] max-sm:text-[22px] font-bold leading-tight tracking-tight ${valueColor}`}>
                 {value}
             </div>
 
